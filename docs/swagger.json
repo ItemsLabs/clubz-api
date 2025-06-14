@@ -1,0 +1,3152 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is a sample server for using Swagger with Echo.",
+        "title": "Swagger Example API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/api/v1",
+    "paths": {
+        "/": {
+            "get": {
+                "description": "process token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "process token",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/chat": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Post chat message",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "chat"
+                ],
+                "summary": "Post chat message",
+                "responses": {
+                    "204": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "forbidden",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/error": {
+            "post": {
+                "description": "Error handler",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Error handler",
+                "parameters": [
+                    {
+                        "description": "Error",
+                        "name": "err",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.APIError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.APIError"
+                        }
+                    }
+                }
+            }
+        },
+        "/games": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "List all games",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "games"
+                ],
+                "summary": "List all games",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Debug 48 hours ago",
+                        "name": "debug48HoursAgo",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Game"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "forbidden",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/games/history": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get game history",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "games"
+                ],
+                "summary": "Get game history",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.HistoricalGame"
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "forbidden",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/games/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get game by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "games"
+                ],
+                "summary": "Get game by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Game ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Game"
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "forbidden",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/games/{id}/doubleup": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Apply double up",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "games"
+                ],
+                "summary": "Apply double up",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Game ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Apply double up request",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.ApplyDoubleUpRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "forbidden",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/games/{id}/events": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get game events",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "games"
+                ],
+                "summary": "Get game events",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Game ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Page",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Page size",
+                        "name": "page_size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.GameEvent"
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "forbidden",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/games/{id}/join": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Join game",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "games"
+                ],
+                "summary": "Join game",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Game ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Game join request",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.GameJoinRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Game"
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "forbidden",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/games/{id}/leaderboard": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get leader board position",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "games"
+                ],
+                "summary": "Get leader board position",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Game ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.LeaderboardPosition"
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "forbidden",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/games/{id}/swap": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Swap player",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "games"
+                ],
+                "summary": "Swap player",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Game ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Game swap request",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.GameSwapRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.GamePick"
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "forbidden",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/games/{id}/user/{user_id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get user game",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "games"
+                ],
+                "summary": "Get user game",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Game ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Game"
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "forbidden",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/health": {
+            "get": {
+                "description": "Check if the service is healthy",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Check if the service is healthy",
+                "operationId": "health",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/matches": {
+            "get": {
+                "description": "Get upcoming matches",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get upcoming matches",
+                "operationId": "upcoming-matches",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/schema.Match"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/matches/{id}": {
+            "get": {
+                "description": "Get match info",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get match info",
+                "operationId": "match-info",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Match ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/schema.Match"
+                        }
+                    }
+                }
+            }
+        },
+        "/matches/{id}/fulltime/headlines": {
+            "get": {
+                "description": "Get match full time headlines",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get match full time headlines",
+                "operationId": "match-full-time-headlines",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Match ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/schema.MatchHeadline"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/matches/{id}/gameplay/headlines": {
+            "get": {
+                "description": "Get match gameplay headlines",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get match gameplay headlines",
+                "operationId": "match-gameplay-headlines",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Match ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/schema.MatchHeadline"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/matches/{id}/headlines": {
+            "get": {
+                "description": "Get match headlines",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get match headlines",
+                "operationId": "match-headlines",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Match ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/schema.MatchHeadline"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/matches/{id}/leaderboard/following": {
+            "get": {
+                "description": "Get following leaderboard",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get following leaderboard",
+                "operationId": "following-leaderboard",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Match ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.LeaderboardEntry"
+                        }
+                    }
+                }
+            }
+        },
+        "/matches/{id}/squad": {
+            "get": {
+                "description": "Get match squad",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get match squad",
+                "operationId": "match-squad",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Match ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/schema.MatchPlayer"
+                        }
+                    }
+                }
+            }
+        },
+        "/matches/{match_id}/players/{player_id}/live": {
+            "get": {
+                "description": "Get live player stats",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get live player stats",
+                "operationId": "get-live-player-stats",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Match ID",
+                        "name": "match_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Player ID",
+                        "name": "player_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.LiveGamePlayerStat"
+                        }
+                    }
+                }
+            }
+        },
+        "/matches/{match_id}/players/{player_id}/pregame": {
+            "get": {
+                "description": "Get pregame player stats for a specific player in a match",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get pregame player stats",
+                "operationId": "get-pregame-player-stats",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Match ID",
+                        "name": "match_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Player ID",
+                        "name": "player_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.PregamePlayerStat"
+                        }
+                    }
+                }
+            }
+        },
+        "/players/{id}": {
+            "get": {
+                "description": "Get player by ID",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get player by ID",
+                "operationId": "get-player-by-id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Player ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/schema.Player"
+                        }
+                    }
+                }
+            }
+        },
+        "/powerups": {
+            "get": {
+                "description": "List all powerups",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "List all powerups",
+                "operationId": "powerups-list",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.PowerUp"
+                        }
+                    }
+                }
+            }
+        },
+        "/readiness": {
+            "get": {
+                "description": "Check if the service is ready",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Check if the service is ready",
+                "operationId": "readiness",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/settings": {
+            "get": {
+                "description": "Get settings",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get settings",
+                "operationId": "settings",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/teams": {
+            "get": {
+                "description": "List all teams",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "List all teams",
+                "operationId": "teams-list",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/schema.Team"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/me": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Current profile",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Current profile",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.CurrentUser"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/me/avatar": {
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Update user avatar",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Update user avatar",
+                "parameters": [
+                    {
+                        "description": "Update user avatar request",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.UseReferralRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.CurrentUser"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/me/followers": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get followers",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Get followers",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Search query",
+                        "name": "search",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.ShortUser"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/me/followings": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get followings",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Get followings",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Search query",
+                        "name": "search",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.ShortUser"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/me/name": {
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Update user name",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Update user name",
+                "parameters": [
+                    {
+                        "description": "Update user name request",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.UpdateUserNameRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.CurrentUser"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/me/wallet/balance/{contractType}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get user wallet balance",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Get user wallet balance",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Contract type",
+                        "name": "contractType",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/me/withdraws": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "User withdraws",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "User withdraws",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Game"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Create withdraw request",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Create withdraw request",
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
+            }
+        },
+        "/users/search": {
+            "get": {
+                "description": "Search users",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Search users",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Search query",
+                        "name": "query",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.ShortUser"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{id}": {
+            "get": {
+                "description": "Get user by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Get user by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.User"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{id}/follow": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Follow user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Follow user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
+            }
+        },
+        "/users/{id}/unfollow": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Unfollow user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Unfollow user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
+            }
+        },
+        "/web3/approve": {
+            "post": {
+                "description": "Approve a token",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Approve a token",
+                "operationId": "approve-token",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Address to approve token to",
+                        "name": "toAddress",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Token ID to approve",
+                        "name": "tokenId",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Contract type",
+                        "name": "contractType",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/web3/approved/{tokenId}/{contractType}": {
+            "get": {
+                "description": "Get approved address",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get approved address",
+                "operationId": "get-approved",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token ID",
+                        "name": "tokenId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Contract type",
+                        "name": "contractType",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/web3/balance/{address}/{contractType}": {
+            "get": {
+                "description": "Get balance of an address",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get balance of an address",
+                "operationId": "get-balance",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Address to get balance of",
+                        "name": "address",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Contract type",
+                        "name": "contractType",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/web3/burn": {
+            "post": {
+                "description": "Burn a token",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Burn a token",
+                "operationId": "burn-token",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token ID to burn",
+                        "name": "tokenId",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Contract type",
+                        "name": "contractType",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/web3/isApprovedForAll/{ownerAddress}/{operatorAddress}/{contractType}": {
+            "get": {
+                "description": "Check if an address is approved for all",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Check if an address is approved for all",
+                "operationId": "is-approved-for-all",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Owner address",
+                        "name": "ownerAddress",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Operator address",
+                        "name": "operatorAddress",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Contract type",
+                        "name": "contractType",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                }
+            }
+        },
+        "/web3/mint": {
+            "post": {
+                "description": "Mint a new token",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Mint a new token",
+                "operationId": "mint-token",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Address to mint token to",
+                        "name": "toAddress",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "CardPackTypeID to mint",
+                        "name": "CardPackTypeID",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/web3/owner/{contractType}": {
+            "get": {
+                "description": "Get owner of a contract",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get owner of a contract",
+                "operationId": "get-owner",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Contract type",
+                        "name": "contractType",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/web3/ownerOfToken/{tokenId}/{contractType}": {
+            "get": {
+                "description": "Get owner of a token",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get owner of a token",
+                "operationId": "owner-of-token",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token ID",
+                        "name": "tokenId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Contract type",
+                        "name": "contractType",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/web3/redeem": {
+            "post": {
+                "description": "Redeem a token",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Redeem a token",
+                "operationId": "redeem-token",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Address to redeem token to",
+                        "name": "toAddress",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "BurnId to redeem",
+                        "name": "burnId",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "URIs to redeem",
+                        "name": "uris",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/web3/safeTransferFrom": {
+            "post": {
+                "description": "Safe transfer from",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Safe transfer from",
+                "operationId": "safe-transfer-from",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Address to transfer token from",
+                        "name": "fromAddress",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Address to transfer token to",
+                        "name": "toAddress",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Token ID to transfer",
+                        "name": "tokenId",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Contract type",
+                        "name": "contractType",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/web3/sendSignedTransaction": {
+            "post": {
+                "description": "Send signed transaction",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Send signed transaction",
+                "operationId": "send-signed-transaction",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Signed transaction hex string",
+                        "name": "signedTxHex",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/web3/setApprovalForAll": {
+            "post": {
+                "description": "Set approval for all",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Set approval for all",
+                "operationId": "set-approval-for-all",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Operator address",
+                        "name": "operator",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Approved value",
+                        "name": "approved",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Contract type",
+                        "name": "contractType",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/web3/tokenURI/{tokenId}/{contractType}": {
+            "get": {
+                "description": "Get token URI",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get token URI",
+                "operationId": "get-token-uri",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token ID",
+                        "name": "tokenId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Contract type",
+                        "name": "contractType",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/web3/transfer": {
+            "post": {
+                "description": "Transfer a token",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Transfer a token",
+                "operationId": "transfer-token",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Address to transfer token from",
+                        "name": "fromAddress",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Address to transfer token to",
+                        "name": "toAddress",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Token ID to transfer",
+                        "name": "tokenId",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Contract type",
+                        "name": "contractType",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "handlers.APIError": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.Action": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "description": "id",
+                    "type": "integer"
+                },
+                "name": {
+                    "description": "name",
+                    "type": "string"
+                },
+                "score": {
+                    "description": "score",
+                    "type": "number"
+                }
+            }
+        },
+        "model.ActionSummary": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "description": "count",
+                    "type": "integer"
+                },
+                "name": {
+                    "description": "name",
+                    "type": "string"
+                },
+                "points": {
+                    "description": "points",
+                    "type": "number"
+                }
+            }
+        },
+        "model.CurrentUser": {
+            "type": "object",
+            "properties": {
+                "avatar_url": {
+                    "description": "avatar url",
+                    "type": "string"
+                },
+                "avg_points": {
+                    "description": "avg points",
+                    "type": "integer"
+                },
+                "avg_rank": {
+                    "description": "avg rank",
+                    "type": "integer"
+                },
+                "avg_rank_percent": {
+                    "description": "avg rank percent",
+                    "type": "integer"
+                },
+                "balance": {
+                    "description": "balance",
+                    "type": "number"
+                },
+                "banned": {
+                    "description": "banned",
+                    "type": "boolean"
+                },
+                "follower_count": {
+                    "description": "follower count",
+                    "type": "integer"
+                },
+                "following_count": {
+                    "description": "following count",
+                    "type": "integer"
+                },
+                "games_played": {
+                    "description": "games played",
+                    "type": "integer"
+                },
+                "id": {
+                    "description": "id",
+                    "type": "string"
+                },
+                "influencer": {
+                    "description": "influencer",
+                    "type": "boolean"
+                },
+                "moderator": {
+                    "description": "moderator",
+                    "type": "boolean"
+                },
+                "name": {
+                    "description": "name",
+                    "type": "string"
+                },
+                "paypal_email": {
+                    "description": "paypal email",
+                    "type": "string"
+                },
+                "powerup_boosts": {
+                    "description": "powerup boosts",
+                    "type": "integer"
+                },
+                "premium": {
+                    "description": "premium",
+                    "type": "boolean"
+                },
+                "ref_code": {
+                    "description": "ref code",
+                    "type": "string"
+                },
+                "ref_code_used": {
+                    "description": "ref code used",
+                    "type": "boolean"
+                },
+                "subscription_tier": {
+                    "description": "subscription tier",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/model.SubscriptionTier"
+                        }
+                    ]
+                },
+                "verified": {
+                    "description": "verified",
+                    "type": "boolean"
+                }
+            }
+        },
+        "model.Game": {
+            "type": "object",
+            "properties": {
+                "allowed_actions": {
+                    "description": "allowed actions",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/model.GameAllowedActions"
+                        }
+                    ]
+                },
+                "id": {
+                    "description": "id",
+                    "type": "string"
+                },
+                "match_id": {
+                    "description": "match id",
+                    "type": "string"
+                },
+                "picks": {
+                    "description": "picks",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.GamePick"
+                    }
+                },
+                "powerups": {
+                    "description": "powerups",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.GamePowerUp"
+                    }
+                },
+                "premium": {
+                    "description": "premium",
+                    "type": "boolean"
+                },
+                "rewards": {
+                    "description": "rewards",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.MatchReward"
+                    }
+                },
+                "status": {
+                    "description": "status",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/model.GameStatus"
+                        }
+                    ]
+                },
+                "subscription_tier": {
+                    "description": "subscription tier",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/model.SubscriptionTier"
+                        }
+                    ]
+                },
+                "swaps": {
+                    "description": "swaps",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.PlayerSwap"
+                    }
+                },
+                "user_id": {
+                    "description": "user id",
+                    "type": "string"
+                },
+                "version": {
+                    "description": "version of game",
+                    "type": "integer"
+                }
+            }
+        },
+        "model.GameAllowedActions": {
+            "type": "object",
+            "properties": {
+                "bonus_powerup_left": {
+                    "description": "bonus powerup left",
+                    "type": "integer"
+                },
+                "powerup_left": {
+                    "description": "powerup left",
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "swaps_left": {
+                    "description": "swaps left",
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "model.GameEvent": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "description": "id",
+                    "type": "string"
+                },
+                "minute": {
+                    "description": "minute",
+                    "type": "integer"
+                },
+                "name": {
+                    "description": "name",
+                    "type": "string"
+                },
+                "player_id": {
+                    "description": "player id",
+                    "type": "string"
+                },
+                "player_name": {
+                    "description": "player name",
+                    "type": "string"
+                },
+                "powered_up": {
+                    "description": "powered up",
+                    "type": "boolean"
+                },
+                "score": {
+                    "description": "score",
+                    "type": "number"
+                },
+                "team_id": {
+                    "description": "team id",
+                    "type": "string"
+                }
+            }
+        },
+        "model.GameJoinRequest": {
+            "type": "object",
+            "properties": {
+                "match_id": {
+                    "description": "match id\nRequired: true",
+                    "type": "string"
+                },
+                "picks": {
+                    "description": "picks\nRequired: true",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model.GamePick": {
+            "type": "object",
+            "properties": {
+                "end": {
+                    "description": "When was this player no longer owned. Null means the player is still owned\nFormat: date-time",
+                    "type": "string"
+                },
+                "game_id": {
+                    "description": "game id",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "id",
+                    "type": "string"
+                },
+                "is_playing": {
+                    "description": "is playing",
+                    "type": "boolean"
+                },
+                "last_modified_event": {
+                    "description": "The last modification of any event that is represented in the score\nFormat: date-time",
+                    "type": "string"
+                },
+                "minute": {
+                    "description": "minute",
+                    "type": "integer"
+                },
+                "player_id": {
+                    "description": "player id",
+                    "type": "string"
+                },
+                "position": {
+                    "description": "card position starting with card 1 {1, 2, 3, 4}",
+                    "type": "integer"
+                },
+                "score": {
+                    "description": "Total points of the footballer pick, including powerup bonuses",
+                    "type": "number"
+                },
+                "second": {
+                    "description": "second",
+                    "type": "integer"
+                },
+                "start": {
+                    "description": "start\nFormat: date-time",
+                    "type": "string"
+                },
+                "user_swapped": {
+                    "description": "user swapped",
+                    "type": "boolean"
+                }
+            }
+        },
+        "model.GamePowerUp": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "description": "created at\nFormat: date-time",
+                    "type": "string"
+                },
+                "duration": {
+                    "description": "duration",
+                    "type": "integer"
+                },
+                "ended_at": {
+                    "description": "null end means that powerup still active\nFormat: date-time",
+                    "type": "string"
+                },
+                "game_id": {
+                    "description": "game id",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "id",
+                    "type": "string"
+                },
+                "minute": {
+                    "description": "minute",
+                    "type": "integer"
+                },
+                "multiplier": {
+                    "description": "Multiplier",
+                    "type": "number"
+                },
+                "position": {
+                    "description": "position",
+                    "type": "integer"
+                },
+                "powerup_id": {
+                    "description": "powerup id",
+                    "type": "integer"
+                },
+                "powerup_name": {
+                    "description": "powerup name",
+                    "type": "string"
+                },
+                "second": {
+                    "description": "second",
+                    "type": "integer"
+                }
+            }
+        },
+        "model.GameStatus": {
+            "type": "string",
+            "enum": [
+                "w",
+                "g",
+                "f"
+            ],
+            "x-enum-varnames": [
+                "GameStatusW",
+                "GameStatusG",
+                "GameStatusF"
+            ]
+        },
+        "model.GameSwapRequest": {
+            "type": "object",
+            "properties": {
+                "new_player_id": {
+                    "description": "new player id\nRequired: true",
+                    "type": "string"
+                },
+                "player_pick_id": {
+                    "description": "player pick id\nRequired: true",
+                    "type": "string"
+                }
+            }
+        },
+        "model.HistoricalGame": {
+            "type": "object",
+            "properties": {
+                "date": {
+                    "description": "date\nFormat: date-time",
+                    "type": "string"
+                },
+                "match_name": {
+                    "description": "match name",
+                    "type": "string"
+                },
+                "num": {
+                    "description": "num",
+                    "type": "integer"
+                },
+                "player_count": {
+                    "description": "player count",
+                    "type": "integer"
+                },
+                "points": {
+                    "description": "points",
+                    "type": "number"
+                },
+                "prize": {
+                    "description": "prize",
+                    "type": "number"
+                },
+                "rank": {
+                    "description": "rank",
+                    "type": "integer"
+                }
+            }
+        },
+        "model.LatestMatchStat": {
+            "type": "object",
+            "properties": {
+                "min_played": {
+                    "description": "min played",
+                    "type": "integer"
+                },
+                "points": {
+                    "description": "points",
+                    "type": "integer"
+                },
+                "team_crest_url": {
+                    "description": "team crest url",
+                    "type": "string"
+                },
+                "team_name": {
+                    "description": "team name",
+                    "type": "string"
+                }
+            }
+        },
+        "model.LeaderboardEntry": {
+            "type": "object",
+            "properties": {
+                "position": {
+                    "description": "position",
+                    "type": "integer"
+                },
+                "premium": {
+                    "description": "premium",
+                    "type": "boolean"
+                },
+                "score": {
+                    "description": "score",
+                    "type": "number"
+                },
+                "subscription_tier": {
+                    "description": "subscription tier",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/model.SubscriptionTier"
+                        }
+                    ]
+                },
+                "user_avatar_url": {
+                    "description": "user avatar url",
+                    "type": "string"
+                },
+                "user_id": {
+                    "description": "user id",
+                    "type": "string"
+                },
+                "user_name": {
+                    "description": "user name",
+                    "type": "string"
+                }
+            }
+        },
+        "model.LeaderboardPosition": {
+            "type": "object",
+            "properties": {
+                "position": {
+                    "description": "position",
+                    "type": "integer"
+                }
+            }
+        },
+        "model.LiveGamePlayerStat": {
+            "type": "object",
+            "properties": {
+                "action_summary": {
+                    "description": "action summary",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.ActionSummary"
+                    }
+                },
+                "last_10_min_points": {
+                    "description": "last 10 min points",
+                    "type": "number"
+                },
+                "point_distribution": {
+                    "description": "point distribution",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.PointBucket"
+                    }
+                },
+                "selected_percent": {
+                    "description": "selected percent",
+                    "type": "number"
+                },
+                "type": {
+                    "description": "type",
+                    "type": "string"
+                }
+            }
+        },
+        "model.MatchReward": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "description": "amount",
+                    "type": "number"
+                },
+                "position": {
+                    "description": "position",
+                    "type": "integer"
+                }
+            }
+        },
+        "model.PlayerSwap": {
+            "type": "object",
+            "properties": {
+                "executed": {
+                    "description": "executed\nFormat: date-time",
+                    "type": "string"
+                },
+                "game_id": {
+                    "description": "game id",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "id",
+                    "type": "string"
+                },
+                "player_id_in": {
+                    "description": "player id in",
+                    "type": "string"
+                },
+                "player_id_out": {
+                    "description": "player id out",
+                    "type": "string"
+                }
+            }
+        },
+        "model.PointBucket": {
+            "type": "object",
+            "properties": {
+                "high": {
+                    "description": "high",
+                    "type": "integer"
+                },
+                "low": {
+                    "description": "low",
+                    "type": "integer"
+                },
+                "value": {
+                    "description": "value",
+                    "type": "number"
+                }
+            }
+        },
+        "model.PowerUp": {
+            "type": "object",
+            "properties": {
+                "actions": {
+                    "description": "shows which actions power-up is affecting",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Action"
+                    }
+                },
+                "description": {
+                    "description": "description",
+                    "type": "string"
+                },
+                "duration": {
+                    "description": "duration in seconds",
+                    "type": "integer"
+                },
+                "icon_url": {
+                    "description": "icon url",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "id",
+                    "type": "integer"
+                },
+                "multiplier": {
+                    "description": "multiplier",
+                    "type": "number"
+                },
+                "name": {
+                    "description": "name",
+                    "type": "string"
+                }
+            }
+        },
+        "model.PowerupOption": {
+            "type": "string",
+            "enum": [
+                "x15_15",
+                "x2_10",
+                "x3_5"
+            ],
+            "x-enum-varnames": [
+                "PowerupOptionX1515",
+                "PowerupOptionX210",
+                "PowerupOptionX35"
+            ]
+        },
+        "model.PregamePlayerStat": {
+            "type": "object",
+            "properties": {
+                "latest_matches": {
+                    "description": "latest matches",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.LatestMatchStat"
+                    }
+                },
+                "point_distribution": {
+                    "description": "point distribution",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.PointBucket"
+                    }
+                },
+                "selected_percent": {
+                    "description": "selected percent",
+                    "type": "number"
+                },
+                "type": {
+                    "description": "type",
+                    "type": "string"
+                }
+            }
+        },
+        "model.ShortUser": {
+            "type": "object",
+            "properties": {
+                "avatar_url": {
+                    "description": "avatar url",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "id",
+                    "type": "string"
+                },
+                "influencer": {
+                    "description": "influencer",
+                    "type": "boolean"
+                },
+                "moderator": {
+                    "description": "moderator",
+                    "type": "boolean"
+                },
+                "name": {
+                    "description": "name",
+                    "type": "string"
+                },
+                "premium": {
+                    "description": "premium",
+                    "type": "boolean"
+                },
+                "subscription_tier": {
+                    "description": "subscription tier",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/model.SubscriptionTier"
+                        }
+                    ]
+                },
+                "verified": {
+                    "description": "verified",
+                    "type": "boolean"
+                }
+            }
+        },
+        "model.SubscriptionTier": {
+            "type": "string",
+            "enum": [
+                "none",
+                "premium",
+                "lite"
+            ],
+            "x-enum-varnames": [
+                "SubscriptionTierNone",
+                "SubscriptionTierPremium",
+                "SubscriptionTierLite"
+            ]
+        },
+        "model.UpdatePayPalEmailRequest": {
+            "type": "object",
+            "properties": {
+                "paypal_email": {
+                    "description": "paypal email\nRequired: true",
+                    "type": "string"
+                }
+            }
+        },
+        "model.UpdateUserNameRequest": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "description": "name\nRequired: true",
+                    "type": "string"
+                }
+            }
+        },
+        "model.UseReferralRequest": {
+            "type": "object",
+            "properties": {
+                "ref_code": {
+                    "description": "ref code\nRequired: true",
+                    "type": "string"
+                }
+            }
+        },
+        "model.User": {
+            "type": "object",
+            "properties": {
+                "avatar_url": {
+                    "description": "avatar url",
+                    "type": "string"
+                },
+                "avg_points": {
+                    "description": "avg points",
+                    "type": "integer"
+                },
+                "avg_rank": {
+                    "description": "avg rank",
+                    "type": "integer"
+                },
+                "avg_rank_percent": {
+                    "description": "avg rank percent",
+                    "type": "integer"
+                },
+                "follower_count": {
+                    "description": "follower count",
+                    "type": "integer"
+                },
+                "following_count": {
+                    "description": "following count",
+                    "type": "integer"
+                },
+                "games_played": {
+                    "description": "games played",
+                    "type": "integer"
+                },
+                "id": {
+                    "description": "id",
+                    "type": "string"
+                },
+                "influencer": {
+                    "description": "influencer",
+                    "type": "boolean"
+                },
+                "is_following": {
+                    "description": "is following",
+                    "type": "boolean"
+                },
+                "name": {
+                    "description": "name",
+                    "type": "string"
+                },
+                "premium": {
+                    "description": "premium",
+                    "type": "boolean"
+                },
+                "subscription_tier": {
+                    "description": "subscription tier",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/model.SubscriptionTier"
+                        }
+                    ]
+                },
+                "verified": {
+                    "description": "verified",
+                    "type": "boolean"
+                },
+                "wallet_address": {
+                    "description": "wallet address",
+                    "type": "string"
+                }
+            }
+        },
+        "null.Float64": {
+            "type": "object",
+            "properties": {
+                "float64": {
+                    "type": "number"
+                },
+                "valid": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "null.Int": {
+            "type": "object",
+            "properties": {
+                "int": {
+                    "type": "integer"
+                },
+                "valid": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "null.String": {
+            "type": "object",
+            "properties": {
+                "string": {
+                    "type": "string"
+                },
+                "valid": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "schema.Match": {
+            "type": "object",
+            "properties": {
+                "away_score": {
+                    "type": "integer"
+                },
+                "away_team_id": {
+                    "type": "string"
+                },
+                "away_team_selection_id": {
+                    "$ref": "#/definitions/null.String"
+                },
+                "competition_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "f_end": {
+                    "type": "string"
+                },
+                "f_start": {
+                    "type": "string"
+                },
+                "has_lineups": {
+                    "type": "boolean"
+                },
+                "home_score": {
+                    "type": "integer"
+                },
+                "home_team_id": {
+                    "type": "string"
+                },
+                "home_team_selection_id": {
+                    "$ref": "#/definitions/null.String"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "import_id": {
+                    "$ref": "#/definitions/null.String"
+                },
+                "last_processed_id": {
+                    "$ref": "#/definitions/null.String"
+                },
+                "last_synced_at": {
+                    "type": "string"
+                },
+                "match_day_id": {
+                    "$ref": "#/definitions/null.String"
+                },
+                "match_end": {
+                    "type": "string"
+                },
+                "match_time": {
+                    "type": "string"
+                },
+                "match_type": {
+                    "type": "integer"
+                },
+                "minute": {
+                    "type": "integer"
+                },
+                "p_end": {
+                    "type": "string"
+                },
+                "p_start": {
+                    "type": "string"
+                },
+                "period": {
+                    "type": "string"
+                },
+                "rewarded": {
+                    "type": "boolean"
+                },
+                "s_end": {
+                    "type": "string"
+                },
+                "s_start": {
+                    "type": "string"
+                },
+                "season_id": {
+                    "type": "string"
+                },
+                "second": {
+                    "type": "integer"
+                },
+                "simulation_from_match_id": {
+                    "$ref": "#/definitions/null.String"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "version": {
+                    "type": "integer"
+                },
+                "x1_end": {
+                    "type": "string"
+                },
+                "x1_start": {
+                    "type": "string"
+                },
+                "x2_end": {
+                    "type": "string"
+                },
+                "x2_start": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.MatchHeadline": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "image_type": {
+                    "$ref": "#/definitions/null.String"
+                },
+                "images": {
+                    "type": "string"
+                },
+                "match_id": {
+                    "type": "string"
+                },
+                "screen_type": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.MatchPlayer": {
+            "type": "object",
+            "properties": {
+                "avg_score": {
+                    "$ref": "#/definitions/null.Float64"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "from_lineups": {
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "is_star": {
+                    "type": "boolean"
+                },
+                "jersey_number": {
+                    "$ref": "#/definitions/null.Int"
+                },
+                "match_id": {
+                    "type": "string"
+                },
+                "played_seconds": {
+                    "$ref": "#/definitions/null.Int"
+                },
+                "player_id": {
+                    "type": "string"
+                },
+                "position": {
+                    "$ref": "#/definitions/null.String"
+                },
+                "score": {
+                    "$ref": "#/definitions/null.Float64"
+                },
+                "team_id": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.Player": {
+            "type": "object",
+            "properties": {
+                "avg_score": {
+                    "$ref": "#/definitions/null.Float64"
+                },
+                "birth_date": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "$ref": "#/definitions/null.String"
+                },
+                "full_name": {
+                    "$ref": "#/definitions/null.String"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "image_url": {
+                    "$ref": "#/definitions/null.String"
+                },
+                "import_id": {
+                    "$ref": "#/definitions/null.String"
+                },
+                "last_name": {
+                    "$ref": "#/definitions/null.String"
+                },
+                "nick_name": {
+                    "$ref": "#/definitions/null.String"
+                },
+                "soccer_wiki_player_id": {
+                    "$ref": "#/definitions/null.Int"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.Team": {
+            "type": "object",
+            "properties": {
+                "abbr": {
+                    "$ref": "#/definitions/null.String"
+                },
+                "country_id": {
+                    "$ref": "#/definitions/null.String"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "crest_url": {
+                    "$ref": "#/definitions/null.String"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "import_id": {
+                    "$ref": "#/definitions/null.String"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "ortec_selection_id": {
+                    "$ref": "#/definitions/null.String"
+                },
+                "region_id": {
+                    "$ref": "#/definitions/null.String"
+                },
+                "short_name": {
+                    "$ref": "#/definitions/null.String"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: fanclash-api
+  namespace: "prd-fanclash"
+  labels:
+    app: fanclash-api
+spec:
+  ports:
+    - port: 80
+      targetPort: 8000
+  selector:
+    app: fanclash-api
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fanclash-api-combined
+  labels:
+    app: fanclash-api-combined
+spec:
+  ports:
+    - port: 80
+      targetPort: 8000
+  selector:
+    purpose: api
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fanclash-api-ws
+  labels:
+    app: fanclash-api-ws
+spec:
+  ports:
+    - port: 80
+      targetPort: 8000
+  selector:
+    app: fanclash-api

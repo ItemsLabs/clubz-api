@@ -1,0 +1,201 @@
+<html>
+
+<head>
+    <style>
+        /* Basic styling applied directly to elements */
+        .email-container {
+            border-radius: 8px;
+            background-color: #02023e;
+            width: 328px;
+            font-family: 'Poppins', Arial, sans-serif;
+            /* Poppins with fallbacks */
+            color: #fff;
+            padding: 24px;
+            margin: 0 auto;
+            /* Center the email content */
+        }
+
+        .logo {
+            width: 98px;
+            height: auto;
+            /* Ensures the logo maintains aspect ratio */
+        }
+
+        .welcome-title {
+            text-align: center;
+            text-transform: uppercase;
+            margin-top: 28px;
+            font-size: 26px;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .welcome-message {
+            text-align: center;
+            margin-top: 22px;
+        }
+
+        .confirm-button {
+            font-family: 'Poppins', Arial, sans-serif !important;
+            /* Poppins with fallbacks */
+            display: block;
+            text-align: center;
+            border-radius: 4px;
+            background-color: #8262ea;
+            margin-top: 22px;
+            font-weight: 500;
+            text-transform: capitalize !important;
+            padding: 13px 57px;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .signature {
+            text-align: center;
+            font-family: 'Roboto', 'Poppins', Arial, sans-serif !important;
+            /* Fallback to Arial */
+            margin-top: 22px;
+        }
+
+        .disclaimer {
+            color: rgba(255, 255, 255, 0.5);
+            text-align: center;
+            margin-top: 22px;
+            font-size: 12px;
+            line-height: 17px;
+        }
+
+        .social-container {
+            text-align: center;
+            margin-top: 44px;
+            padding: 6px 41px 0;
+        }
+
+        .social-title {
+            font-family: 'Poppins', Arial, sans-serif !important;
+            /* Poppins with fallbacks */
+            font-weight: 700;
+        }
+
+        .social-icons-table {
+            margin: 0 auto;
+            /* Center the table */
+        }
+
+        .social-icons-table td {
+            padding: 0 10px;
+            /* Space between icons */
+        }
+
+        .social-icons img {
+            width: 30px;
+            /* Adjust size if needed */
+            height: 30px;
+        }
+
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+    </style>
+    <!-- Google Fonts Preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Poppins Font Family -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+</head>
+
+<body style="margin: 0; padding: 0; background-color: #f2f2f2;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f2f2f2; padding: 20px 0;">
+        <tr>
+            <td align="center">
+                <table width="328" cellpadding="0" cellspacing="0" class="email-container">
+                    <tr>
+                        <td align="center">
+                            <img class="logo"
+                                src="https://laliga.ams3.cdn.digitaloceanspaces.com/email-imgs/gameon-logo.png"
+                                alt="Logo" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h1 class="welcome-title">Welcome to GameOn Live Fantasy</h1>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p class="welcome-message">
+                                Just hit the button below to confirm your account and unlock new features.
+                                Once confirmed, this email will be uniquely associated with your GameOn Live Fantasy
+                                account.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center">
+                            <a href="{{.Url}}" class="confirm-button">Confirm my account</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <section class="signature">
+                                <strong>Cheers,</strong><br />
+                                The GameOn Team
+                            </section>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p class="disclaimer">
+                                If you did not create an account using this address, you can safely ignore this email.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center">
+                            <div class="social-container">
+                                <h2 class="social-title">Stay Connected</h2>
+                                <!-- Social Icons Section -->
+                                <table class="social-icons-table">
+                                    <tr>
+                                        <td>
+                                            <!-- LinkedIn Icon -->
+                                            <a href="https://www.linkedin.com/company/gameonfanapp/" target="_blank">
+                                                <img src="https://laliga.ams3.cdn.digitaloceanspaces.com/email-imgs/icon-linkedin.jpg"
+                                                    alt="LinkedIn" />
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <!-- Discord Icon -->
+                                            <a href="https://discord.com/invite/zJPYdUCyAq" target="_blank">
+                                                <img src="https://laliga.ams3.cdn.digitaloceanspaces.com/email-imgs/icon-discord.jpg"
+                                                    alt="Discord" />
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <!-- X Icon -->
+                                            <a href="https://x.com/GameOn_HQ" target="_blank">
+                                                <img src="https://laliga.ams3.cdn.digitaloceanspaces.com/email-imgs/icon-x.jpg"
+                                                    alt="X" />
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>

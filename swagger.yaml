@@ -1,0 +1,3204 @@
+swagger: "2.0"
+info:
+    description: |
+        **GameOn Live Fantasy API**
+
+        Here is the API related to the Live Fantasy game.
+
+        **Brief description of the set of features:**
+
+        - **Account Creation:** Users have two types of accounts, guest account (created when the app is downloaded) and full account (when users sign up with Google and Apple). Full account users have a Sequence Wallet generated.
+        - **Player Selection:** Users using any account type may select 4 players to enter a match.
+        - **Power Ups / Boosts:** There is a set of consumables that users can spend credits to utilize and boost their points during a match.
+        - **Credits:** It's the soft currency that users can earn through play or purchase through microtransactions.
+        - **Payments / In-App Purchase:** It's the in-app purchase flow where users can purchase credits or avatar packs.
+        - **Avatar Packs:** Are the consumable items that users can buy that contain multiple Player Avatars.
+        - **Player Avatars:** Are premium versions of an Athlete that, during player selection, if a user selects a player whose avatar they own, they will earn a multiplier in their points.
+        - **Inventory:** It's the location where users can view their unopened Avatar Packs, open their Avatar Packs, and view their Player Avatars.
+        - **Match:** Is the live game with data provided by a third-party Data Provider. Users join Matches by selecting four players.
+        - **Leaderboards:** By selecting Players to join a Match, users are added to leaderboard rankings for that Match.
+        - **Chat:** In the chat window of each match, users can communicate with each other by text.
+        - **Divisions:** By scoring and being part of leaderboards, the top 5 results of a User's participation on that game week are added to a global leaderboard. At the end of each game week, users are promoted/relegated/considered safe to the next/previous division. Users will also earn rewards at the end of each game week, dependent on their division ranking.
+        - **Game Week:** is what GameOn considers as a grouping of matches, currently set on a Monday to Monday schedule.
+
+        **1. Authentication: The Gatekeeper**
+        - **Role and Interaction:**
+          - **Purpose:** Authentication is the foundational layer that secures the API, ensuring that only authorized users can access sensitive information and perform actions. It primarily uses JWT (JSON Web Token) for securing endpoints.
+          - **Internal Interaction:** When a user sends a request to an endpoint that requires authentication, the JWT middleware checks if the token is valid and corresponds to an active session. If the token is valid, the request proceeds; otherwise, the user is prompted to authenticate.
+          - **Endpoints Interaction:**
+            - **Games and Matches:** Users need to authenticate to join games, view detailed match information, participate in match-specific chats, and access leaderboards.
+            - **Web3 Interactions:** Authentication is required to manage NFTs, open card packs, and view digital assets securely.
+            - **Chats:** Both general and match-specific chats require the user to be authenticated to ensure that only registered users can send and receive messages.
+            - **Purchases and IAP:** Secure access is needed for making purchases, accessing transaction history, and interacting with RevenueCat services.
+
+        **2. Games and Matches: The Core Experience**
+        - **Role and Interaction:**
+          - **Purpose:** This component provides users with the ability to engage in fantasy sports by joining games, participating in match-related activities, and tracking performance via leaderboards.
+          - **Internal Interaction:**
+            - **Games and Matches Endpoints:**
+              - **Game Join and Details:** Users can join games and retrieve game-specific data, including player stats, game events, and power-ups.
+              - **Match Information:** The API provides detailed information about upcoming and ongoing matches, including team lineups, events, and leaderboards.
+              - **Match Chats:** Users can join chat rooms related to specific matches. These chats allow real-time interaction among participants, enhancing the immersive experience.
+          - **End-to-End Flow:**
+            - **Authentication:** The user logs in to access their profile and available matches.
+            - **Game Interaction:** The user joins a game tied to a specific match, choosing their team and players.
+            - **Match Participation:** During the match, the user tracks live stats, engages in match-specific chats, and applies power-ups.
+            - **Leaderboard Tracking:** After or during the match, the user views the leaderboard to see their ranking compared to other participants.
+
+        **3. Web3 Interactions: Blockchain Integration**
+        - **Role and Interaction:**
+          - **Purpose:** This component integrates blockchain functionalities, enabling users to manage Non-Fungible Tokens (NFTs), open card packs, and view their digital assets. It bridges traditional gaming with Web3 elements, providing a decentralized experience.
+          - **Internal Interaction:**
+            - **NFT Management:** Users can retrieve their balance, check ownership, and interact with NFTs using the Web3 endpoints.
+            - **Card Packs:** Users can open card packs, which may contain NFTs that are added to their digital wallet.
+            - **Data Import:** This endpoint allows importing NFT data into the system, ensuring that all assets are up-to-date and synchronized.
+          - **End-to-End Flow:**
+            - **Authentication:** The user authenticates to secure access to their digital assets.
+            - **View Balance:** The user checks their NFT balance or the balance of specific assets like ERC-20 tokens.
+            - **Open Card Packs:** The user opens card packs, which might contain new NFTs that are added to their wallet.
+            - **NFT Management:** The user can view, transfer, or interact with their NFTs, participating in a decentralized marketplace or game ecosystem.
+
+        **4. Chats: Real-Time Communication**
+        - **Role and Interaction:**
+          - **Purpose:** Chat functionality allows users to communicate in real-time with others, whether in general chat rooms or match-specific rooms. This feature enhances the social and interactive aspects of the platform.
+          - **Internal Interaction:**
+            - **WebSocket Connections:** The chat functionality is primarily facilitated through WebSocket connections, which maintain persistent connections between the client and server for real-time communication.
+            - **Message Management:** Users can send, receive, and delete messages in chat rooms. These actions are controlled by the API to ensure data integrity and security.
+          - **End-to-End Flow:**
+            - **Authentication:** The user logs in to gain access to the chat rooms.
+            - **Join Chat:** The user enters a general chat room or a match-specific chat room.
+            - **Real-Time Communication:** The user sends and receives messages, which are broadcast to all participants in the room via WebSocket.
+            - **Message Moderation:** Users can delete their messages, ensuring they have control over their communication.
+
+        **5. Purchases and IAP: Transaction Management**
+        - **Role and Interaction:**
+          - **Purpose:** This component handles in-app purchases (IAP), allowing users to buy items, upgrades, or access premium content. It integrates with external services like RevenueCat to manage transactions and subscriptions.
+          - **Internal Interaction:**
+            - **Transaction Creation:** Users initiate purchases, which are processed and tracked via the RevenueCat service.
+            - **Webhook Management:** RevenueCat sends webhooks to the API to confirm transactions, update user status, and handle subscription renewals or cancellations.
+          - **End-to-End Flow:**
+            - **Authentication:** The user logs in to access purchasing capabilities.
+            - **Initiate Purchase:** The user selects an item or service to purchase, which triggers the creation of a transaction.
+            - **Transaction Handling:** The purchase is processed, and the API communicates with RevenueCat to confirm the transaction.
+            - **Webhook Processing:** RevenueCat sends a webhook to the API to confirm the transaction status, which is then updated in the user’s profile.
+            - **Access Content:** Upon successful purchase, the user gains access to the purchased content or premium features.
+
+        **6. Leaderboards and Histories: Tracking and Analysis**
+        - **Role and Interaction:**
+          - **Purpose:** Leaderboards and histories provide users with a way to track their performance across games and matches over time. This component allows users to view current rankings and review their past game participation.
+          - **Internal Interaction:**
+            - **Leaderboard Updates:** As users participate in games, their performance data is continuously updated, affecting their leaderboard position.
+            - **History Retrieval:** Users can access their game histories, viewing details about their participation, scores, and outcomes in previous games or weeks.
+          - **End-to-End Flow:**
+            - **Authentication:** The user logs in to view personalized data such as leaderboards and game histories.
+            - **Leaderboard Viewing:** The user checks the current leaderboard for a game or match to see how they rank compared to others.
+            - **Historical Analysis:** The user reviews their game history, analyzing their performance across different matches and weeks.
+            - **Strategy Adjustment:** Based on historical data and leaderboard positions, the user may adjust their strategy for future games to improve their ranking.
+
+        **Interconnected Workflow**
+        - **User Onboarding:**
+          - The user registers or logs in, securing access to the platform’s features via authentication.
+        - **Game and Match Participation:**
+          - After logging in, the user joins games and interacts with matches. They can chat with other users in real-time and view their performance on leaderboards.
+        - **Digital Asset Management:**
+          - As the user engages in games, they can earn or purchase NFTs, open card packs, and manage their digital assets through the Web3 functionality.
+        - **In-App Purchases:**
+          - The user may decide to make purchases, which are handled securely via the IAP system. Purchased content or features are immediately available, tracked through webhooks for real-time updates.
+        - **Performance Tracking:**
+          - Throughout their experience, the user’s performance is continuously tracked, with data available for viewing on leaderboards and in historical records. This information helps the user refine their strategy for future games.
+
+
+    version: "1.0.80"
+    title: GameOn LIVE API
+    contact:
+        email: hello@gameon.app
+paths:
+    /users/profile/:
+        get:
+            summary: Get current user profile
+            description: Retrieves the profile information of the current authenticated user. This can be used to get user-specific data such as the user's ID, name, email, and subscription details.
+            responses:
+                200:
+                    description: OK
+                    schema:
+                        $ref: "#/definitions/CurrentUser"
+    /users/profile/name/:
+        post:
+            summary: Update user name
+            description: Update the name of the current authenticated user. This can be used to change the display name in the user's profile.
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                      $ref: "#/definitions/UpdateUserNameRequest"
+            consumes:
+                - "application/x-www-form-urlencoded"
+            responses:
+                200:
+                    description: OK
+                    schema:
+                        $ref: "#/definitions/CurrentUser"
+    /users/profile/paypal_email/:
+        post:
+            summary: Update current user PayPal email
+            description: Update the PayPal email address associated with the current user's profile. This is necessary for users who want to receive payouts via PayPal.
+            parameters:
+                - in: formData
+                  name: paypal_email
+                  description: should be valid email
+                  type: string
+                  required: true
+            consumes:
+                - "application/x-www-form-urlencoded"
+            responses:
+                200:
+                    description: OK
+                    schema:
+                        $ref: "#/definitions/CurrentUser"
+    /users/profile/referral/:
+        post:
+            summary: User referral requests
+            description: Allows the current user to use a referral code to gain benefits. This endpoint updates the user's profile to reflect the referral.
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                      $ref: "#/definitions/UseReferralRequest"
+            responses:
+                200:
+                    description: OK
+                    schema:
+                        $ref: "#/definitions/CurrentUser"
+    /users/profile/followers/:
+        get:
+            summary: Get user followers
+            description: Retrieves a list of followers for the current user. This can be used to display social interactions within the app.
+            responses:
+                200:
+                    description: OK
+                    schema:
+                        $ref: "#/definitions/ShortUserArray"
+    /users/profile/followings/:
+        get:
+            summary: Get user followings
+            description: Retrieves a list of users that the current user is following. This can be used to track social connections.
+            responses:
+                200:
+                    description: OK
+                    schema:
+                        $ref: "#/definitions/ShortUserArray"
+    /users/{user_id}/follow:
+        post:
+            summary: Follow a user
+            description: Authenticated users can follow another user by specifying the user ID in the path. The user's profile can be retrieved using the `/users/profile/` endpoint, which will give the `user_id` needed for this operation.
+            parameters:
+                - in: path
+                  name: user_id
+                  type: string
+                  required: true
+                  description: The ID of the user to follow.
+            responses:
+                204:
+                    description: No Content - Successfully followed the user.
+    /users/{user_id}/unfollow:
+        post:
+            summary: Unfollow a user
+            description: Authenticated users can unfollow another user by specifying the user ID in the path. Use the `/users/profile/followings/` endpoint to retrieve the list of users the current user is following.
+            parameters:
+                - in: path
+                  name: user_id
+                  type: string
+                  required: true
+                  description: The ID of the user to unfollow.
+            responses:
+                204:
+                    description: No Content - Successfully unfollowed the user.
+    /matches/upcoming:
+        get:
+            summary: Retrieve upcoming matches
+            description: Fetches a list of upcoming matches based on optional date filters. This can be used to display match schedules to users.
+            parameters:
+                - in: query
+                  name: start
+                  type: string
+                  format: date-time
+                  description: Start range of the date for filtering upcoming matches.
+                - in: query
+                  name: end
+                  type: string
+                  format: date-time
+                  description: End range of the date for filtering upcoming matches.
+                - in: query
+                  name: week
+                  type: number
+                  format: int32
+                  description: Game week of the competition.
+            responses:
+                200:
+                    description: OK
+                    schema:
+                        $ref: "#/definitions/MatchArray"
+    /matches/{match_id}/:
+        get:
+            summary: Get match info
+            description: Provides detailed information about a specific match. The match_id can be obtained from the `/matches/upcoming/` endpoint.
+            parameters:
+                - in: path
+                  name: match_id
+                  type: string
+                  required: true
+            responses:
+                200:
+                    description: OK
+                    schema:
+                        $ref: "#/definitions/Match"
+    /matches/{match_id}/squad/:
+        get:
+            summary: Get footballers for match
+            description: Returns the list of footballers for a specific match. This information is typically used to display the players participating in a match.
+            parameters:
+                - in: path
+                  name: match_id
+                  type: string
+                  required: true
+            responses:
+                200:
+                    description: OK
+                    schema:
+                        $ref: "#/definitions/MatchPlayerArray"
+    /matches/{match_id}/following_leaderboard:
+        get:
+            summary: Returns following leaderboard of a user
+            description: Returns the leaderboard of users that the current user is following for a specific match. This is useful for tracking how your friends are performing in the match.
+            parameters:
+                - in: path
+                  name: match_id
+                  type: string
+                  required: true
+            responses:
+                200:
+                    description: OK
+                    schema:
+                        type: array
+                        items:
+                            $ref: "#/definitions/LeaderboardEntry"
+    /matches/{matchID}/leaderboard/{count}:
+        get:
+            summary: Get top N users by score
+            description: Retrieve the top N users from the leaderboard by score for a specific match. The matchID can be obtained from the `/matches/{match_id}/` endpoint.
+            parameters:
+                - name: matchID
+                  in: path
+                  description: Match ID
+                  required: true
+                  type: string
+                - name: count
+                  in: path
+                  description: Number of users to retrieve
+                  required: true
+                  type: integer
+            responses:
+                200:
+                    description: Successful operation
+                    schema:
+                        type: array
+                        items:
+                            $ref: "#/definitions/LeaderboardEntry"
+    /games/:
+        get:
+            summary: List of games for given user
+            description: Get the list of games that the authenticated user has participated in. This provides an overview of the user's gaming history.
+            responses:
+                201:
+                    description: Success
+                    schema:
+                        $ref: "#/definitions/GameArray"
+                400:
+                    description: Problem
+                    schema:
+                        $ref: "#/definitions/ErrorResponse"
+                404:
+                    description: Not Found
+                401:
+                    description: Not Authenticated
+    /games/join/:
+        post:
+            summary: Join a public game
+            description: Allows an authenticated user to join a public game with their initial picks. The match_id for the game can be retrieved using the `/matches/upcoming/` endpoint.
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                      $ref: "#/definitions/GameJoinRequest"
+            consumes:
+                - "application/x-www-form-urlencoded"
+            responses:
+                200:
+                    schema:
+                        $ref: "#/definitions/Game"
+                    description: Joined game
+    /games/history/:
+        post:
+            summary: Return list of historical games of user
+            description: Retrieves a list of historical games that the user has participated in. This can be used to analyze past performance.
+            responses:
+                200:
+                    schema:
+                        type: array
+                        items:
+                            $ref: "#/definitions/HistoricalGame"
+                    description: List of historical games
+    /games/{game_id}/:
+        get:
+            summary: Retrieve game information
+            description: Provides detailed information about a specific game that a user has joined. The game_id can be obtained from the response of `/games/join/`.
+            parameters:
+                - in: path
+                  name: game_id
+                  type: string
+                  required: true
+                  description: The ID of the game to retrieve information for.
+            responses:
+                200:
+                    description: OK
+                    schema:
+                        $ref: "#/definitions/Game"
+    /games/{game_id}/actions/:
+        get:
+            summary: Retrieve game actions
+            description: Retrieves a list of actions performed in a game from newest to oldest. This is related to the specific game the user is participating in. The `game_id` should be obtained from `/games/{game_id}/`.
+            parameters:
+                - in: path
+                  name: game_id
+                  type: string
+                  required: true
+                  description: The ID of the game to retrieve actions for.
+            responses:
+                200:
+                    description: OK
+                    schema:
+                        $ref: "#/definitions/GameEventArray"
+    /games/{game_id}/swap/:
+        post:
+            deprecated: true
+            parameters:
+                - in: path
+                  name: game_id
+                  type: string
+                  required: true
+                - in: body
+                  name: body
+                  schema:
+                      $ref: "#/definitions/GameSwapRequest"
+            consumes:
+                - "application/json"
+            responses:
+                201:
+                    description: Success
+                    schema:
+                        $ref: "#/definitions/GamePick"
+                400:
+                    description: Problem
+                    schema:
+                        $ref: "#/definitions/ErrorResponse"
+                404:
+                    description: Not Found
+                401:
+                    description: Not Authenticated
+    /games/{game_id}/substitution:
+        post:
+            parameters:
+                - in: path
+                  name: game_id
+                  type: string
+                  required: true
+                - in: body
+                  name: body
+                  schema:
+                      $ref: "#/definitions/GameSwapRequest"
+            consumes:
+                - "application/json"
+            responses:
+                201:
+                    description: Success
+                    schema:
+                        $ref: "#/definitions/GamePick"
+                400:
+                    description: Problem
+                    schema:
+                        $ref: "#/definitions/ErrorResponse"
+                404:
+                    description: Not Found
+                401:
+                    description: Not Authenticated
+    /games/{game_id}/powerups/:
+        get:
+            summary: Authed (optional) call to get powerups
+            description: List of powerups for a game. These powerups can be applied during the game to enhance performance.
+            parameters:
+                - in: path
+                  name: game_id
+                  type: string
+                  required: true
+            responses:
+                200:
+                    description: OK
+                    schema:
+                        $ref: "#/definitions/PowerUp"
+        post:
+            summary: Authed apply powerup call
+            description: Apply a powerup to a game. The `game_id` should be obtained from `/games/{game_id}/`.
+            consumes:
+                - "application/x-www-form-urlencoded"
+                - "application/json"
+            parameters:
+                - in: path
+                  name: game_id
+                  type: string
+                  required: true
+                - in: body
+                  name: Powerup request
+                  schema:
+                      $ref: "#/definitions/ApplyPowerUpRequest"
+            responses:
+                204:
+                    description: OK
+    /games/{game_id}/leaderboard_position/:
+        get:
+            summary: Leaderboard position of user
+            description: Retrieves the leaderboard position of the authenticated user for a specific game. The `game_id` should be obtained from `/games/{game_id}/`.
+            parameters:
+                - in: path
+                  name: game_id
+                  type: string
+                  required: true
+            responses:
+                200:
+                    description: OK
+                    schema:
+                        $ref: "#/definitions/LeaderboardPosition"
+    /teams/{team_id}/:
+        get:
+            summary: Team info
+            description: Retrieves information about a specific team. The `team_id` can be obtained from match data.
+            parameters:
+                - in: path
+                  name: team_id
+                  type: string
+                  required: true
+            responses:
+                200:
+                    description: Success
+                    schema:
+                        $ref: "#/definitions/Team"
+                404:
+                    description: Not Found
+    /players/{player_id}/:
+        get:
+            summary: Player info
+            description: Retrieves information about a specific player. The `player_id` can be obtained from match data or game picks.
+            parameters:
+                - in: path
+                  name: player_id
+                  type: string
+                  required: true
+            responses:
+                200:
+                    description: Success
+                    schema:
+                        $ref: "#/definitions/Player"
+                404:
+                    description: Not Found
+    /actions/:
+        get:
+            summary: Get actions
+            description: Retrieve all actions that are tracked in the system. These actions are used to calculate scores in games.
+            responses:
+                200:
+                    description: Success
+                    schema:
+                        $ref: "#/definitions/ActionArray"
+        post:
+            summary: Create action
+            description: Create a new action that can be tracked in games. This is used by administrators to define new types of actions.
+            responses:
+                200:
+                    description: OK
+    /actions/{id}:
+        post:
+            summary: Update action
+            description: Update an existing action by its ID. This allows administrators to modify action definitions.
+            parameters:
+                - name: id
+                  in: path
+                  type: string
+                  required: true
+                  description: Action ID
+            responses:
+                200:
+                    description: OK
+        delete:
+            summary: Delete action
+            description: Delete an action by its ID. This is used by administrators to remove obsolete or incorrect actions.
+            parameters:
+                - name: id
+                  in: path
+                  type: string
+                  required: true
+                  description: Action ID
+            responses:
+                204:
+                    description: No Content
+    /items:
+        get:
+            summary: Get all items
+            description: Retrieve information about all items available in the system. This includes virtual goods that users can purchase or earn.
+            responses:
+                200:
+                    description: Successful operation
+                    schema:
+                        type: array
+                        items:
+                            $ref: "#/definitions/Item"
+                404:
+                    description: No items found
+    /items/{id}:
+        get:
+            summary: Get item by ID
+            description: Retrieve information about a specific item. This can be used to display item details in the UI.
+            parameters:
+                - name: id
+                  in: path
+                  description: ID of the item to retrieve
+                  required: true
+                  type: string
+            responses:
+                200:
+                    description: Successful operation
+                    schema:
+                        $ref: "#/definitions/Item"
+                404:
+                    description: Item not found
+    /leaderboard/top/score/{matchID}/{count}:
+        get:
+            summary: Get top users by score
+            description: Retrieves the top users from the leaderboard based on their score for a specific match. The `matchID` can be obtained from the `/matches/{match_id}/` endpoint.
+            parameters:
+                - name: matchID
+                  in: path
+                  description: ID of the match
+                  required: true
+                  type: string
+                - name: count
+                  in: path
+                  description: Number of users to retrieve
+                  required: true
+                  type: integer
+            responses:
+                200:
+                    description: Successful response
+                    schema:
+                        $ref: "#/definitions/LeaderboardResponse"
+    /leaderboard/top/position/{matchID}/{count}:
+        get:
+            summary: Get top users by position
+            description: Retrieves the top users from the leaderboard based on their position for a specific match. The `matchID` can be obtained from the `/matches/{match_id}/` endpoint.
+            parameters:
+                - name: matchID
+                  in: path
+                  description: ID of the match
+                  required: true
+                  type: string
+                - name: count
+                  in: path
+                  description: Number of users to retrieve
+                  required: true
+                  type: integer
+            responses:
+                200:
+                    description: Successful response
+                    schema:
+                        $ref: "#/definitions/LeaderboardResponse"
+    /iap/confirm-transaction/{transactionId}:
+        post:
+            summary: Confirm IAP transaction
+            description: Confirm an In-App Purchase (IAP) transaction. This endpoint is called after a purchase has been made in the app store.
+            consumes:
+                - "application/x-www-form-urlencoded"
+                - "application/json"
+            parameters:
+                - name: transactionId
+                  in: path
+                  description: The ID of the transaction to confirm
+                  required: true
+                  type: string
+                - name: body
+                  in: body
+                  schema:
+                      $ref: "#/definitions/ConfirmTransactionRequest"
+            responses:
+                200:
+                    description: Success
+                400:
+                    description: Bad request
+                    schema:
+                        $ref: "#/definitions/ErrorResponse"
+    /iap/rc/create-transaction:
+        post:
+            summary: Create RevenueCat IAP transaction
+            description: Create a new transaction using RevenueCat. This is used for managing subscriptions and purchases via RevenueCat.
+            consumes:
+                - "application/x-www-form-urlencoded"
+                - "application/json"
+            parameters:
+                - name: body
+                  in: body
+                  schema:
+                      $ref: "#/definitions/RevenueCatPurchaseRequest"
+            responses:
+                200:
+                    description: Success
+                400:
+                    description: Bad request
+                    schema:
+                        $ref: "#/definitions/ErrorResponse"
+    /iap/card-pack-types:
+        get:
+            summary: Get card pack types
+            description: Get card pack types
+            responses:
+                200:
+                    description: Success
+                    schema:
+                        type: array
+                        items:
+                            $ref: "#/definitions/CardPackType"
+    /weeks:
+        get:
+            summary: Retrieve all game weeks
+            description: Retrieve a list of all game weeks. This is useful for understanding the schedule of the competition.
+            produces:
+                - application/json
+            responses:
+                200:
+                    description: A list of game weeks
+                    schema:
+                        type: array
+                        items:
+                            $ref: "#/definitions/GameWeek"
+    /weeks/{id}/leaderboard:
+        get:
+            summary: Retrieve the leaderboard for a specific week
+            description: Retrieve the leaderboard for a specific week. This allows users to see how they and others performed in a particular week.
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  type: integer
+            produces:
+                - application/json
+            responses:
+                200:
+                    description: A list of leaderboard entries for the specified week
+                    schema:
+                        type: array
+                        items:
+                            $ref: "#/definitions/NewLeaderboardResponse"
+    /leaderboard/current_week:
+        get:
+            summary: Retrieve the current week's leaderboard
+            description: Retrieve the leaderboard for the current week. This endpoint provides real-time rankings for the ongoing week.
+            produces:
+                - application/json
+            responses:
+                200:
+                    description: A list of leaderboard entries for the current week
+                    schema:
+                        type: array
+                        items:
+                            $ref: "#/definitions/NewLeaderboardResponse"
+    /user_game_week_histories:
+        get:
+            summary: List User Game Week Histories
+            description: Get a list of all User Game Week Histories for the current user. This is used to track user performance across different weeks.
+            tags:
+                - UserGameWeekHistory
+            produces:
+                - application/json
+            parameters:
+                - name: page
+                  in: query
+                  description: Page number for pagination
+                  required: false
+                  type: integer
+                - name: page_size
+                  in: query
+                  description: Number of records per page
+                  required: false
+                  type: integer
+            responses:
+                200:
+                    description: Successful response
+                    schema:
+                        type: array
+                        items:
+                            $ref: "#/definitions/UserGameWeekHistory"
+                401:
+                    description: Unauthorized
+                403:
+                    description: Forbidden
+    /user_game_week_histories/{id}:
+        get:
+            summary: Get User Game Week History
+            description: Retrieve a specific User Game Week History by ID. This allows users to see detailed performance data for a particular week.
+            tags:
+                - UserGameWeekHistory
+            produces:
+                - application/json
+            parameters:
+                - name: id
+                  in: path
+                  description: ID of the User Game Week History
+                  required: true
+                  type: string
+            responses:
+                200:
+                    description: Successful response
+                    schema:
+                        $ref: "#/definitions/UserGameWeekHistory"
+                401:
+                    description: Unauthorized
+                403:
+                    description: Forbidden
+                404:
+                    description: Not Found
+    /user_game_week_histories/latest:
+        get:
+            summary: Get Latest User Game Week History
+            description: Retrieve the latest User Game Week History for the current user. This provides the most recent data on user performance.
+            tags:
+                - UserGameWeekHistory
+            produces:
+                - application/json
+            responses:
+                200:
+                    description: Successful response
+                    schema:
+                        $ref: "#/definitions/UserGameWeekHistory"
+                401:
+                    description: Unauthorized
+                403:
+                    description: Forbidden
+                404:
+                    description: Not Found
+    /chat/ws:
+        get:
+            summary: Chat WebSocket
+            description: WebSocket endpoint for chat. This is used to establish a real-time communication channel for chat messages.
+            tags:
+                - chat
+            responses:
+                200:
+                    description: OK
+    /leaderboards/ws:
+        get:
+            summary: Leaderboard WebSocket
+            description: WebSocket endpoint for leaderboard updates. This provides real-time leaderboard data to users.
+            tags:
+                - leaderboards
+            responses:
+                200:
+                    description: OK
+    /chat/{room}:
+        get:
+            summary: Get chat messages
+            description: Retrieve chat messages by room. This endpoint is used to display chat history for a specific room.
+            tags:
+                - chat
+            parameters:
+                - name: room
+                  in: path
+                  type: string
+                  required: true
+                  description: Room name
+            responses:
+                200:
+                    description: OK
+        post:
+            summary: Post chat message
+            description: Post a new chat message to a room. This allows users to communicate in a specific room.
+            tags:
+                - chat
+            parameters:
+                - name: room
+                  in: path
+                  type: string
+                  required: true
+                  description: Room name
+            responses:
+                204:
+                    description: No Content
+    /chat/{room}/{messageId}:
+        delete:
+            summary: Delete chat message
+            description: Delete a chat message by message ID. This allows users to remove messages they have posted.
+            tags:
+                - chat
+            parameters:
+                - name: room
+                  in: path
+                  type: string
+                  required: true
+                  description: Room name
+                - name: messageId
+                  in: path
+                  type: string
+                  required: true
+                  description: Message ID
+            responses:
+                204:
+                    description: No Content
+    /matches/{id}/chat:
+        get:
+            summary: Get match chat messages
+            description: Retrieve chat messages for a specific match. This allows users to see the chat history related to a match.
+            tags:
+                - matches
+            parameters:
+                - name: id
+                  in: path
+                  type: string
+                  required: true
+                  description: Match ID
+            responses:
+                200:
+                    description: OK
+        post:
+            summary: Post match chat message
+            description: Post a new chat message to a match. This allows users to communicate about a specific match.
+            tags:
+                - matches
+            parameters:
+                - name: id
+                  in: path
+                  type: string
+                  required: true
+                  description: Match ID
+            responses:
+                204:
+                    description: No Content
+    /matches/{id}/chat/{messageId}:
+        delete:
+            summary: Delete match chat message
+            description: Delete a chat message for a match by message ID. This allows users to remove messages they have posted related to a match.
+            tags:
+                - matches
+            parameters:
+                - name: id
+                  in: path
+                  type: string
+                  required: true
+                  description: Match ID
+                - name: messageId
+                  in: path
+                  type: string
+                  required: true
+                  description: Message ID
+            responses:
+                204:
+                    description: No Content
+    /ws:
+        get:
+            summary: WebSocket Event Pipe
+            description: WebSocket event pipe endpoint. This is used for establishing a WebSocket connection for real-time events.
+            tags:
+                - websocket
+            responses:
+                200:
+                    description: OK
+    /web3/create-card-pack:
+        post:
+            summary: Create a card pack
+            description: Create a new card pack in the system. This is typically done as part of managing digital assets in the game.
+            tags:
+                - web3
+            responses:
+                200:
+                    description: OK
+    /web3/assign-card-pack:
+        post:
+            summary: Assign a card pack
+            description: Assign a card pack to a user. This operation links the card pack to a specific user's account.
+            tags:
+                - web3
+            responses:
+                200:
+                    description: OK
+    /web3/balance/{address}/{contractType}:
+        get:
+            summary: Get balance
+            description: Get the balance of a specific address for a contract type. This is used to check how many assets the user holds.
+            tags:
+                - web3
+            parameters:
+                - name: address
+                  in: path
+                  type: string
+                  required: true
+                  description: Wallet address
+                - name: contractType
+                  in: path
+                  type: string
+                  required: true
+                  description: Contract type
+            responses:
+                200:
+                    description: OK
+    /web3/approve:
+        post:
+            summary: Approve token
+            description: Approve a token for transfer. This is used in the context of allowing certain operations on digital assets.
+            tags:
+                - web3
+            responses:
+                200:
+                    description: OK
+    /web3/setApprovalForAll:
+        post:
+            summary: Set approval for all
+            description: Set approval for all tokens for an operator. This operation allows another address to manage all of the user's assets of a specific type.
+            tags:
+                - web3
+            responses:
+                200:
+                    description: OK
+    /web3/transfer:
+        post:
+            summary: Transfer a token
+            description: Transfer a token to another address. This is used to send digital assets between users.
+            tags:
+                - web3
+            responses:
+                200:
+                    description: OK
+    /web3/burn:
+        post:
+            summary: Burn a token
+            description: Burn (destroy) a token. This is typically used to remove an asset from circulation.
+            tags:
+                - web3
+            responses:
+                200:
+                    description: OK
+    /web3/tokenURI/{tokenId}/{contractType}:
+        get:
+            summary: Get token URI
+            description: Get the URI of a token. This URI typically points to metadata about the token, such as its description and image.
+            tags:
+                - web3
+            parameters:
+                - name: tokenId
+                  in: path
+                  type: string
+                  required: true
+                  description: Token ID
+                - name: contractType
+                  in: path
+                  type: string
+                  required: true
+                  description: Contract type
+            responses:
+                200:
+                    description: OK
+    /web3/ownerOf/{tokenId}/{contractType}:
+        get:
+            summary: Get token owner
+            description: Get the owner of a token. This retrieves the address of the account that holds a specific token.
+            tags:
+                - web3
+            parameters:
+                - name: tokenId
+                  in: path
+                  type: string
+                  required: true
+                  description: Token ID
+                - name: contractType
+                  in: path
+                  type: string
+                  required: true
+                  description: Contract type
+            responses:
+                200:
+                    description: OK
+    /web3/isApprovedForAll/{ownerAddress}/{operatorAddress}/{contractType}:
+        get:
+            summary: Check if approved for all
+            description: Check if an operator is approved for all tokens of an owner. This determines if the operator has management rights over the owner's tokens.
+            tags:
+                - web3
+            parameters:
+                - name: ownerAddress
+                  in: path
+                  type: string
+                  required: true
+                  description: Owner address
+                - name: operatorAddress
+                  in: path
+                  type: string
+                  required: true
+                  description: Operator address
+                - name: contractType
+                  in: path
+                  type: string
+                  required: true
+                  description: Contract type
+            responses:
+                200:
+                    description: OK
+    /web3/getOwner/{contractType}:
+        get:
+            summary: Get contract owner
+            description: Get the owner of a contract. This retrieves the address that owns a specific smart contract.
+            tags:
+                - web3
+            parameters:
+                - name: contractType
+                  in: path
+                  type: string
+                  required: true
+                  description: Contract type
+            responses:
+                200:
+                    description: OK
+    /web3/getApproved/{tokenId}/{contractType}:
+        get:
+            summary: Get approved address
+            description: Get the approved address for a token. This retrieves the address that is approved to manage or transfer a specific token.
+            tags:
+                - web3
+            parameters:
+                - name: tokenId
+                  in: path
+                  type: string
+                  required: true
+                  description: Token ID
+                - name: contractType
+                  in: path
+                  type: string
+                  required: true
+                  description: Contract type
+            responses:
+                200:
+                    description: OK
+    /web3/safeTransferFrom:
+        post:
+            summary: Safe transfer from
+            description: Safe transfer of a token from one address to another. This ensures that the transfer operation is valid before executing it.
+            tags:
+                - web3
+            responses:
+                200:
+                    description: OK
+    /web3/sendSignedTransaction:
+        post:
+            summary: Send signed transaction
+            description: Send a signed transaction to the blockchain. This is used for submitting pre-signed operations for execution.
+            tags:
+                - web3
+            responses:
+                200:
+                    description: OK
+    /web3/open-card-pack/{cardPackID}:
+        post:
+            summary: Open a card pack
+            description: Open a card pack and assign players to the user. The players in the card pack will be assigned to the user's account.
+            tags:
+                - web3
+            parameters:
+                - name: cardPackID
+                  in: path
+                  type: string
+                  required: true
+                  description: Card pack ID
+            responses:
+                200:
+                    description: OK
+    /web3/get-card-packs-players:
+        get:
+            summary: Get players from card packs
+            description: Retrieve the players from a user's card packs. This lists all players associated with the card packs assigned to the user.
+            tags:
+                - web3
+            responses:
+                200:
+                    description: OK
+    /web3/import-data:
+        post:
+            summary: Import data to the blockchain
+            description: Import external data to the blockchain. This is used for adding new data to the decentralized ledger.
+            tags:
+                - web3
+            responses:
+                200:
+                    description: OK
+    /purchase/{id}:
+        get:
+            summary: Get purchase
+            description: Get purchase details by ID. This provides information about a specific purchase made by a user.
+            tags:
+                - purchase
+            parameters:
+                - name: id
+                  in: path
+                  type: string
+                  required: true
+                  description: Purchase ID
+            responses:
+                200:
+                    description: OK
+    /webhook:
+        post:
+            summary: Webhook endpoint
+            description: Webhook endpoint for receiving external events. This is typically used to integrate with external services.
+            tags:
+                - webhook
+            responses:
+                200:
+                    description: OK
+    /settings:
+        get:
+            summary: Get application settings
+            description: Get the current application settings. This is used to retrieve configuration data for the app.
+            tags:
+                - settings
+            responses:
+                200:
+                    description: OK
+    /readiness:
+        get:
+            summary: Readiness check
+            description: Readiness check endpoint for verifying that the service is ready to handle requests.
+            tags:
+                - health
+            responses:
+                200:
+                    description: OK
+    /healthz:
+        get:
+            summary: Health check
+            description: Health check endpoint for monitoring the status of the service.
+            tags:
+                - health
+            responses:
+                200:
+                    description: OK
+
+definitions:
+    AuthTokens:
+        type: object
+        required:
+            - token
+            - refresh_token
+        properties:
+            token:
+                type: string
+            refresh_token:
+                type: string
+    UpdateUserNameRequest:
+        type: object
+        required:
+            - name
+        properties:
+            name:
+                type: string
+    UseReferralRequest:
+        type: object
+        required:
+            - ref_code
+        properties:
+            ref_code:
+                type: string
+    UpdatePayPalEmailRequest:
+        type: object
+        required:
+            - paypal_email
+        properties:
+            paypal_email:
+                type: string
+    GameJoinRequest:
+        type: object
+        required:
+            - match_id
+            - picks
+        properties:
+            match_id:
+                type: string
+            picks:
+                type: array
+                items:
+                    type: string
+    NewGameJoinRequest:
+        type: object
+        required:
+            - match_id
+            - picks
+        properties:
+            match_id:
+                type: string
+            picks:
+                type: array
+                items:
+                    type: object
+                    properties:
+                        pick:
+                            type: string
+                        nft:
+                            type: string
+                    required:
+                        - pick
+                        - nft
+
+    GameSwapRequest:
+        type: object
+        required:
+            - player_pick_id
+            - new_player_id
+        properties:
+            player_pick_id:
+                type: string
+            new_player_id:
+                type: string
+    ApplyPowerUpRequest:
+        type: object
+        required:
+            - powerup_id
+        properties:
+            lineup_position:
+                type: integer
+                example: 1
+            powerup_id:
+                type: integer
+                example: 1
+            option:
+                $ref: "#/definitions/PowerupOption"
+    Game:
+        type: object
+        properties:
+            id:
+                type: string
+            version:
+                type: integer
+                default: 0
+                description: version of game
+                x-omitempty: false
+            match_id:
+                type: string
+            user_id:
+                type: string
+            score:
+                $ref: "#/definitions/NumberWithZero"
+                description: Total points of the footballer pick, including powerup bonuses
+                x-omitempty: false
+            status:
+                $ref: "#/definitions/GameStatus"
+                x-omitempty: false
+            picks:
+                type: array
+                items:
+                    $ref: "#/definitions/GamePick"
+                x-omitempty: false
+            swaps:
+                type: array
+                items:
+                    $ref: "#/definitions/PlayerSwap"
+                x-omitempty: false
+            powerups:
+                type: array
+                items:
+                    $ref: "#/definitions/GamePowerUp"
+                x-omitempty: false
+            rewards:
+                type: array
+                items:
+                    $ref: "#/definitions/MatchReward"
+                x-omitempty: false
+            allowed_actions:
+                $ref: "#/definitions/GameAllowedActions"
+                x-omitempty: false
+            premium:
+                type: boolean
+                x-omitempty: false
+            subscription_tier:
+                $ref: "#/definitions/SubscriptionTier"
+                x-omitempty: false
+    GameAllowedActions:
+        type: object
+        properties:
+            swaps_left:
+                type: array
+                items:
+                    type: integer
+                x-omitempty: false
+            powerup_left:
+                type: array
+                items:
+                    type: integer
+                x-omitempty: false
+            bonus_powerup_left:
+                type: integer
+                x-omitempty: false
+    GameStatus:
+        type: string
+        description: status of game
+        enum:
+            - w # waiting
+            - g # gameplay
+            - f # finished
+    PowerupOption:
+        type: string
+        description: status of game
+        enum:
+            - x15_15 # 1.5x for 15 mins
+            - x2_10 # 2x for 10 mins
+            - x3_5 # 3x for 5 mins
+    HistoricalGame:
+        type: object
+        properties:
+            match_id:
+                type: string
+                x-omitempty: false
+            num:
+                type: integer
+                x-omitempty: false
+            match_name:
+                type: string
+                x-omitempty: false
+            home_team:
+                type: string
+                x-omitempty: false
+            away_team:
+                type: string
+                x-omitempty: false
+            home_score:
+                type: integer
+                x-omitempty: false
+            away_score:
+                type: integer
+                x-omitempty: false
+            date:
+                type: string
+                format: date-time
+                x-omitempty: false
+            points:
+                $ref: "#/definitions/NumberWithZero"
+                x-omitempty: false
+            rank:
+                type: integer
+                x-omitempty: false
+            player_count:
+                type: integer
+                x-omitempty: false
+            prize:
+                $ref: "#/definitions/NumberWithZero"
+                x-omitempty: false
+            players:
+                type: array
+                items:
+                    $ref: "#/definitions/HistoricalGamePlayer"
+                x-omitempty: false
+    HistoricalGamePlayer:
+        type: object
+        properties:
+            id:
+                type: string
+                x-omitempty: false
+            name:
+                type: string
+                x-omitempty: false
+            lastname:
+                type: string
+                x-omitempty: false
+            nickname:
+                type: string
+                x-omitempty: false
+            fullname:
+                type: string
+                x-omitempty: false
+            image_url:
+                type: string
+                x-omitempty: false
+            score:
+                type: number
+                x-omitempty: false
+            lineup_position:
+                type: integer
+                description: card position starting with card 1 {1, 2, 3, 4}
+                x-omitempty: false
+            start:
+                type: string
+                format: date-time
+                x-omitempty: false
+            end:
+                type: string
+                format: date-time
+                description: When was this player no longer owned. Null means the player is still owned
+                x-omitempty: false
+                x-nullable: true
+    GameArray:
+        type: array
+        items:
+            $ref: "#/definitions/Game"
+    GamePowerUp:
+        type: object
+        properties:
+            id:
+                type: string
+            game_id:
+                type: string
+            powerup_id:
+                type: integer
+            powerup_name:
+                type: string
+                x-omitempty: false
+            lineup_position:
+                type: integer
+                x-omitempty: false
+            duration:
+                type: integer
+                x-omitempty: false
+            multiplier:
+                $ref: "#/definitions/NumberWithZero"
+                description: Multiplier
+                x-omitempty: false
+            created_at:
+                type: string
+                format: date-time
+                x-omitempty: false
+            ended_at:
+                description: null end means that powerup still active
+                type: string
+                format: date-time
+                x-omitempty: false
+                x-nullable: true
+            minute:
+                type: integer
+                x-omitempty: false
+            second:
+                type: integer
+                x-omitempty: false
+    PlayerSwap:
+        type: object
+        properties:
+            id:
+                type: string
+            game_id:
+                type: string
+            player_id_in:
+                type: string
+            player_id_out:
+                type: string
+            executed:
+                type: string
+                format: date-time
+    PowerUp:
+        type: object
+        properties:
+            id:
+                type: integer
+                x-omitempty: false
+            name:
+                type: string
+                x-omitempty: false
+            description:
+                type: string
+                x-omitempty: false
+            icon_url:
+                type: string
+                x-omitempty: false
+                x-nullable: true
+            duration:
+                type: integer
+                description: duration in seconds
+                x-omitempty: false
+            multiplier:
+                $ref: "#/definitions/NumberWithZero"
+                x-omitempty: false
+            actions:
+                description: "shows which actions power-up is affecting"
+                type: array
+                items:
+                    $ref: "#/definitions/Action"
+            cost:
+                $ref: "#/definitions/NumberWithZero"
+                x-omitempty: false
+                x-nullable: true
+    GamePick:
+        type: object
+        description: Footballer picked by a user playing a match
+        properties:
+            id:
+                type: string
+                x-omitempty: false
+            game_id:
+                type: string
+                x-omitempty: false
+            player_id:
+                type: string
+                x-omitempty: false
+            image_url:
+                type: string
+                x-omitempty: false
+            player_name:
+                type: string
+                x-omitempty: false
+            player_lastname:
+                type: string
+                x-omitempty: false
+            player_nickname:
+                type: string
+                x-omitempty: false
+            player_fullname:
+                type: string
+                x-omitempty: false
+            lineup_position:
+                type: integer
+                description: card position starting with card 1 {1, 2, 3, 4}
+                x-omitempty: false
+            start:
+                type: string
+                format: date-time
+                x-omitempty: false
+            end:
+                type: string
+                format: date-time
+                description: When was this player no longer owned. Null means the player is still owned
+                x-omitempty: false
+                x-nullable: true
+            score:
+                $ref: "#/definitions/NumberWithZero"
+                description: Total points of the footballer pick, including powerup bonuses
+                x-omitempty: false
+            last_modified_event:
+                type: string
+                format: date-time
+                description: The last modification of any event that is represented in the score
+                x-omitempty: false
+            minute:
+                type: integer
+                x-omitempty: false
+            second:
+                type: integer
+                x-omitempty: false
+            user_swapped:
+                type: boolean
+                x-omitempty: false
+            is_playing:
+                type: boolean
+                x-omitempty: false
+            normalized_name:
+                type: string
+                x-omitempty: false
+    GameEvent:
+        type: object
+        description: Individual action for which points are awarded
+        properties:
+            id:
+                type: string
+                x-omitempty: false
+            player_id:
+                type: string
+                x-omitempty: false
+            player_name:
+                type: string
+                x-omitempty: false
+            team_id:
+                type: string
+                x-omitempty: false
+            minute:
+                type: integer
+                x-omitempty: false
+            second:
+                type: integer
+                x-omitempty: false
+            name:
+                type: string
+                x-omitempty: false
+            score:
+                $ref: "#/definitions/NumberWithZero"
+                x-omitempty: false
+            initial_score:
+                $ref: "#/definitions/NumberWithZero"
+                x-omitempty: false
+            power_up_name:
+                type: string
+                x-omitempty: false
+            powered_up:
+                type: boolean
+                x-omitempty: false
+            created_at:
+                type: string
+                format: date-time
+            player_image_url:
+                type: string
+                x-omitempty: false
+            nft_image_url:
+                type: string
+                x-omitempty: false
+            boost_multiplier:
+                type: number
+                x-omitempty: false
+            nft_multiplier:
+                type: number
+                x-omitempty: false
+    GameEventArray:
+        type: array
+        items:
+            $ref: "#/definitions/GameEvent"
+    Action:
+        type: object
+        description: action that we score
+        properties:
+            id:
+                type: integer
+                x-omitempty: false
+            name:
+                type: string
+                x-omitempty: false
+            description:
+                type: string
+                x-omitempty: false
+            score:
+                $ref: "#/definitions/NumberWithZero"
+                x-omitempty: false
+            category:
+                type: string
+                x-omitempty: false
+            icon:
+                type: string
+                x-omitempty: false
+    ActionArray:
+        type: array
+        items:
+            $ref: "#/definitions/Action"
+    UpdateActionRequest:
+        type: object
+        properties:
+            name:
+                type: string
+            description:
+                type: string
+            score:
+                type: number
+    CreateActionsRequest:
+        type: array
+        items:
+            type: object
+            properties:
+                name:
+                    type: string
+                description:
+                    type: string
+                score:
+                    type: number
+    MatchPlayer:
+        type: object
+        properties:
+            position:
+                type: string
+                x-omitempty: false
+                x-nullable: true
+            jersey_number:
+                type: integer
+                x-omitempty: false
+                x-nullable: true
+            player:
+                $ref: "#/definitions/Player"
+            team_id:
+                type: string
+                x-omitempty: false
+            is_playing:
+                type: boolean
+                x-omitempty: false
+            is_star:
+                type: boolean
+                x-omitempty: false
+            match_score:
+                $ref: "#/definitions/NumberWithZero"
+                x-omitempty: false
+                x-nullable: true
+            team_name:
+                type: string
+                x-omitempty: false
+            team_crest:
+                type: string
+                x-omitempty: false
+            ppg:
+                type: number
+                format: double
+                x-omitempty: true
+    MatchPlayerArray:
+        type: array
+        items:
+            $ref: "#/definitions/MatchPlayer"
+    Team:
+        type: object
+        properties:
+            id:
+                type: string
+                x-omitempty: false
+            name:
+                type: string
+                x-omitempty: false
+            abbr:
+                type: string
+                x-nullable: true
+                x-omitempty: false
+            crest_url:
+                type: string
+                x-nullable: true
+                x-omitempty: false
+    Player:
+        type: object
+        properties:
+            id:
+                type: string
+            full_name:
+                type: string
+                x-omitempty: false
+            avg_score:
+                $ref: "#/definitions/NumberWithZero"
+                x-omitempty: false
+            image_url:
+                type: string
+                x-nullable: true
+                x-omitempty: false
+            normalized_name:
+                type: string
+                x-omitempty: false
+            import_id:
+                type: string
+                x-nullable: true
+                x-omitempty: false
+    Order:
+        type: object
+        properties:
+            id:
+                type: string
+            created_at:
+                type: string
+                format: date-time
+            updated_at:
+                type: string
+                format: date-time
+            quantity:
+                type: integer
+                format: int32
+            contract:
+                type: string
+            token_id:
+                type: string
+            delivered:
+                type: boolean
+            purchased_at:
+                type: string
+                format: date-time
+            blockchain_uuid:
+                type: string
+            payment_platform_uuid:
+                type: string
+            blockchain_order_status:
+                $ref: "#/definitions/BlockchainStatus"
+            payment_platform_status:
+                $ref: "#/definitions/PaymentPlatformStatus"
+            payment_platform_type:
+                $ref: "#/definitions/PaymentType"
+            cancel_url:
+                type: string
+            success_url:
+                type: string
+            payment_platform_url:
+                type: string
+            item_id:
+                type: integer
+                format: int32
+            user_id:
+                type: string
+            amount:
+                type: number
+                multipleOf: 0.01
+    PaymentPlatformStatus:
+        type: integer
+        enum:
+            - 0 # PROCESSING
+            - 1 # FAILED
+            - 2 # COMPLETED
+            - 3 # EXPIRED
+    BlockchainStatus:
+        type: integer
+        enum:
+            - 0 # MINT_NOT_STARTED
+            - 1 # MINT_IN_PROGRESS
+            - 2 # MINT_FAILED
+            - 3 # MINT_SUCCEEDED
+            - 4 # MINT_TIMEOUT
+    PaymentType:
+        type: integer
+        enum:
+            - 1 # STRIPE
+            - 2 # INTERNAL (CREDITS)
+    Competition:
+        type: object
+        properties:
+            id:
+                type: string
+            name:
+                type: string
+    Match:
+        type: object
+        properties:
+            id:
+                type: string
+                description: Internal Match Id
+            created_at:
+                type: string
+                format: date-time
+            updated_at:
+                type: string
+                format: date-time
+            match_time:
+                type: string
+                format: date-time
+                description: Planned Kick-Off Time
+            home_team:
+                $ref: "#/definitions/Team"
+            away_team:
+                $ref: "#/definitions/Team"
+            home_score:
+                type: integer
+                x-omitempty: false
+            away_score:
+                type: integer
+                x-omitempty: false
+            f_start:
+                type: string
+                format: date-time
+                x-nullable: true
+            f_end:
+                type: string
+                format: date-time
+                x-nullable: true
+            s_start:
+                type: string
+                format: date-time
+                x-nullable: true
+            s_end:
+                type: string
+                format: date-time
+                x-nullable: true
+            x1_start:
+                type: string
+                format: date-time
+                x-nullable: true
+            x1_end:
+                type: string
+                format: date-time
+                x-nullable: true
+            x2_start:
+                type: string
+                format: date-time
+                x-nullable: true
+            x2_end:
+                type: string
+                format: date-time
+                x-nullable: true
+            p_start:
+                type: string
+                format: date-time
+                x-nullable: true
+            p_end:
+                type: string
+                format: date-time
+                x-nullable: true
+            has_lineups:
+                type: boolean
+                x-omitempty: false
+            version:
+                type: integer
+                x-omitempty: false
+            status:
+                $ref: "#/definitions/MatchStatus"
+                x-omitempty: false
+            match_type:
+                $ref: "#/definitions/MatchType"
+                x-omitempty: false
+            match_end:
+                type: string
+                format: date-time
+                x-nullable: true
+            period:
+                $ref: "#/definitions/MatchPeriod"
+                x-omitempty: false
+            competition:
+                $ref: "#/definitions/Competition"
+            rules:
+                $ref: "#/definitions/MatchRule"
+            rewards:
+                type: array
+                items:
+                    $ref: "#/definitions/MatchReward"
+            match_timer:
+                type: string
+            player_count:
+                type: integer
+                x-omitempty: false
+    MatchStatus:
+        type: string
+        description: status of game
+        enum:
+            - u # unknown
+            - w # waiting
+            - l # lineups
+            - g # game
+            - e # ended
+            - c # cancelled
+    MatchType:
+        type: integer
+        description: status of game
+        enum:
+            - 0 # unknown
+            - 1 # free
+            - 2 # cash
+            - 3 # cash-plus
+    SubscriptionTier:
+        type: string
+        description: tier of subscription
+        enum:
+            - none
+            - premium
+            - lite
+    MatchPeriod:
+        type: string
+        description: status of game
+        enum:
+            - p # pregame
+            - f # first half
+            - h # half time
+            - s # second half
+            - bx1 # break x1
+            - x1 # first ext
+            - bx2 # break x2
+            - x2 # second ext
+            - bp # break penalties
+            - pe # penalties
+            - pg # post game
+    MatchArray:
+        type: array
+        items:
+            $ref: "#/definitions/Match"
+    MatchHeadline:
+        type: object
+        properties:
+            title:
+                type: string
+                x-omitempty: false
+            description:
+                type: string
+                x-omitempty: false
+            type:
+                type: string
+                x-omitempty: false
+            images:
+                type: array
+                items:
+                    type: string
+                x-omitempty: false
+                x-nullable: false
+            image_type:
+                type: string
+                x-omitempty: false
+    MatchRule:
+        type: object
+        properties:
+            num_of_picks:
+                type: integer
+            max_star_player_picks:
+                type: integer
+    MatchReward:
+        type: object
+        properties:
+            position:
+                type: integer
+                x-nullable: true
+            amount:
+                $ref: "#/definitions/NumberWithZero"
+            min_position:
+                type: integer
+                description: Minimum position for this reward range
+            max_position:
+                type: integer
+                x-nullable: true
+                x-omitempty: false
+                description: Maximum position for this reward range (nullable)
+            game:
+                type: number
+                x-omitempty: false
+            lapt:
+                type: number
+                x-omitempty: false
+            balls:
+                type: integer
+                x-omitempty: false
+            signed_shirts:
+                type: integer
+                x-omitempty: false
+            shirts:
+                type: integer
+                x-omitempty: false
+            signed_balls:
+                type: integer
+                x-omitempty: false
+            event:
+                type: integer
+                x-omitempty: false
+            kick_off_pack_1:
+                type: integer
+                x-omitempty: false
+            kick_off_pack_2:
+                type: integer
+                x-omitempty: false
+            kick_off_pack_3:
+                type: integer
+                x-omitempty: false
+            season_pack_1:
+                type: integer
+                x-omitempty: false
+            season_pack_2:
+                type: integer
+                x-omitempty: false
+            season_pack_3:
+                type: integer
+                x-omitempty: false
+
+    LeaderboardPosition:
+        type: object
+        properties:
+            position:
+                type: integer
+                x-omitempty: false
+                x-nullable: true
+    LeaderboardEntry:
+        type: object
+        properties:
+            user_id:
+                type: string
+                x-omitempty: false
+            user_name:
+                type: string
+                x-omitempty: false
+            user_avatar_url:
+                type: string
+                x-omitempty: false
+            position:
+                type: integer
+                x-omitempty: false
+            score:
+                $ref: "#/definitions/NumberWithZero"
+                x-omitempty: false
+            premium:
+                type: boolean
+                x-omitempty: false
+            subscription_tier:
+                $ref: "#/definitions/SubscriptionTier"
+                x-omitempty: false
+            reward:
+                $ref: "#/definitions/NumberWithZero"
+                x-omitempty: false
+                x-nullable: true
+    LeaderboardResponse:
+        type: object
+        properties:
+            leaderboard:
+                type: array
+                items:
+                    $ref: "#/definitions/LeaderboardEntry"
+                description: List of leaderboard entries
+    User:
+        type: object
+        properties:
+            id:
+                type: string
+                x-omitempty: false
+            name:
+                type: string
+                x-omitempty: false
+            avatar_url:
+                type: string
+                x-omitempty: false
+            verified:
+                type: boolean
+                x-omitempty: false
+            follower_count:
+                type: integer
+                x-omitempty: false
+            following_count:
+                type: integer
+                x-omitempty: false
+            games_played:
+                type: integer
+                x-omitempty: false
+            avg_points:
+                type: integer
+                x-omitempty: false
+                x-nullable: true
+            avg_rank:
+                type: integer
+                x-omitempty: false
+                x-nullable: true
+            avg_rank_percent:
+                type: integer
+                x-omitempty: false
+                x-nullable: true
+            is_following:
+                type: boolean
+                x-omitempty: false
+            premium:
+                type: boolean
+                x-omitempty: false
+            subscription_tier:
+                $ref: "#/definitions/SubscriptionTier"
+                x-omitempty: false
+            influencer:
+                type: boolean
+                x-omitempty: false
+            wallet_address:
+                type: string
+                x-omitempty: false
+            email:
+                type: string
+                x-omitempty: false
+    CurrentUser:
+        type: object
+        properties:
+            id:
+                type: string
+                x-omitempty: false
+            name:
+                type: string
+                x-omitempty: false
+            balance:
+                $ref: "#/definitions/NumberWithZero"
+                x-omitempty: false
+            paypal_email:
+                type: string
+                x-omitempty: false
+            avatar_url:
+                type: string
+                x-omitempty: false
+            verified:
+                type: boolean
+                x-omitempty: false
+            ref_code:
+                type: string
+                x-omitempty: false
+            ref_code_used:
+                type: boolean
+                x-omitempty: false
+            powerup_boosts:
+                type: integer
+                x-omitempty: false
+            follower_count:
+                type: integer
+                x-omitempty: false
+            following_count:
+                type: integer
+                x-omitempty: false
+            games_played:
+                type: integer
+                x-omitempty: false
+            avg_points:
+                type: integer
+                x-omitempty: false
+                x-nullable: true
+            avg_rank:
+                type: integer
+                x-omitempty: false
+                x-nullable: true
+            avg_rank_percent:
+                type: integer
+                x-omitempty: false
+                x-nullable: true
+            moderator:
+                type: boolean
+                x-omitempty: false
+            banned:
+                type: boolean
+                x-omitempty: false
+            premium:
+                type: boolean
+                x-omitempty: false
+            subscription_tier:
+                $ref: "#/definitions/SubscriptionTier"
+                x-omitempty: false
+            influencer:
+                type: boolean
+                x-omitempty: false
+            email:
+                type: string
+                x-omitempty: false
+    ShortUser:
+        type: object
+        properties:
+            id:
+                type: string
+                x-omitempty: false
+            name:
+                type: string
+                x-omitempty: false
+            avatar_url:
+                type: string
+                x-omitempty: false
+            verified:
+                type: boolean
+                x-omitempty: false
+            moderator:
+                type: boolean
+                x-omitempty: false
+            premium:
+                type: boolean
+                x-omitempty: false
+            subscription_tier:
+                $ref: "#/definitions/SubscriptionTier"
+                x-omitempty: false
+            influencer:
+                type: boolean
+                x-omitempty: false
+            email:
+                type: string
+                x-omitempty: false
+    PregamePlayerStat:
+        type: object
+        properties:
+            type:
+                type: string
+            latest_matches:
+                type: array
+                items:
+                    $ref: "#/definitions/LatestMatchStat"
+            point_distribution:
+                type: array
+                items:
+                    $ref: "#/definitions/PointBucket"
+            selected_percent:
+                type: number
+    LiveGamePlayerStat:
+        type: object
+        properties:
+            type:
+                type: string
+            point_distribution:
+                type: array
+                items:
+                    $ref: "#/definitions/PointBucket"
+            last_10_min_points:
+                type: number
+            selected_percent:
+                type: number
+            action_summary:
+                type: array
+                items:
+                    $ref: "#/definitions/ActionSummary"
+    PointBucket:
+        type: object
+        properties:
+            low:
+                type: integer
+                x-omitempty: false
+            high:
+                type: integer
+                x-omitempty: false
+            value:
+                type: number
+                x-omitempty: false
+    ActionSummary:
+        type: object
+        properties:
+            name:
+                type: string
+            count:
+                type: integer
+            points:
+                type: number
+    LatestMatchStat:
+        type: object
+        properties:
+            team_name:
+                type: string
+            team_crest_url:
+                type: string
+            min_played:
+                type: integer
+            points:
+                type: integer
+    PostChatMessageRequest:
+        type: object
+        properties:
+            message:
+                type: string
+    PostPurchaseRequest:
+        type: object
+        properties:
+            item_id:
+                type: string
+            quantity:
+                type: integer
+            amount:
+                type: number
+                multipleOf: 0.01
+            payment_method:
+                $ref: "#/definitions/PaymentType"
+            cancel_url:
+                type: string
+            success_url:
+                type: string
+    Item:
+        type: object
+        properties:
+            ID:
+                type: integer
+            Price:
+                type: number
+                format: double
+            Title:
+                type: string
+            Description:
+                type: string
+            PageURL:
+                type: string
+            PurchaseImgURL:
+                type: string
+            ContractAbbr:
+                type: string
+            ContractAddress:
+                type: string
+            TokenID:
+                type: string
+            StripePriceID:
+                type: string
+            MinQuantity:
+                type: integer
+            DefaultQuantity:
+                type: integer
+            MaxQuantity:
+                type: integer
+            WhitelistRequired:
+                type: boolean
+            StartDateAt:
+                type: string
+                format: date-time
+            CloseDateAt:
+                type: string
+                format: date-time
+            BonusQuantity:
+                type: object
+            Type:
+                type: integer
+                enum:
+                    - 1 # CREDIT_TOKEN
+                    - 2 # CARDPACK
+    ShortUserArray:
+        type: array
+        items:
+            $ref: "#/definitions/ShortUser"
+    NumberWithZero:
+        type: number
+        x-nullable: true
+        x-go-type:
+            import:
+                package: "github.com/gameon-app-inc/laliga-matchfantasy-api/types"
+            type: "FloatWithZero"
+    ErrorResponse:
+        type: object
+        properties:
+            success:
+                type: string
+            type:
+                type: string
+            message:
+                type: string
+    RegisterRequest:
+        type: object
+        required:
+            - email
+            - password
+            - accountType
+            - wallet_address
+        properties:
+            email:
+                type: string
+                format: email
+            password:
+                type: string
+            accountType:
+                type: string
+                enum: [guest, premium]
+            name:
+                type: string
+                x-omitempty: false
+            avatar_url:
+                type: string
+                x-nullable: true
+                x-omitempty: false
+            firebase_id:
+                type: string
+                x-nullable: true
+                x-omitempty: false
+            balance:
+                $ref: "#/definitions/NumberWithZero"
+                x-omitempty: false
+            paypal_email:
+                type: string
+                x-nullable: true
+                x-omitempty: false
+            ref_code:
+                type: string
+                x-nullable: true
+                x-omitempty: false
+            ref_code_id:
+                type: string
+                x-nullable: true
+                x-omitempty: false
+            wallet_address:
+                type: string
+                x-nullable: true
+    RegisterResponse:
+        type: object
+        properties:
+            userID:
+                type: string
+    LoginRequest:
+        type: object
+        required:
+            - email
+            - password
+        properties:
+            email:
+                type: string
+                format: email
+            password:
+                type: string
+    LoginResponse:
+        type: object
+        properties:
+            Token:
+                type: string
+    VerificationRequest:
+        type: object
+        required:
+            - token
+        properties:
+            token:
+                type: string
+    UpgradeRequest:
+        type: object
+        required:
+            - email
+            - password
+            - username
+        properties:
+            email:
+                type: string
+                format: email
+            username:
+                type: string
+            password:
+                type: string
+            wallet_address:
+                type: string
+            sequence_session_id:
+                type: string
+    Sport:
+        type: object
+        properties:
+            id:
+                type: string
+            name:
+                type: string
+                x-omitempty: false
+            description:
+                type: string
+                x-omitempty: true
+    GameWeek:
+        type: object
+        properties:
+            id:
+                type: string
+            end_at:
+                type: string
+                format: date-time
+                x-omitempty: false
+            start_at:
+                type: string
+                format: date-time
+                x-omitempty: false
+            status:
+                type: string
+            name:
+                type: string
+                x-omitempty: false
+    ConfirmTransactionRequest:
+        type: object
+        properties:
+            store:
+                type: string
+                enum:
+                    - apple
+                    - google
+            productId:
+                type: string
+            purchaseDate:
+                type: string
+                format: date-time
+    RevenueCatPurchaseRequest:
+        type: object
+        properties:
+            event:
+                $ref: "#/definitions/RevenueCatPurchaseRequestEvent"
+    RevenueCatPurchaseRequestEvent:
+        type: object
+        properties:
+            original_transaction_id:
+                type: string
+            purchased_at_ms:
+                type: integer
+            app_user_id:
+                type: string
+            product_id:
+                type: string
+            store:
+                type: string
+                enum:
+                    - AMAZON
+                    - APP_STORE
+                    - MAC_APP_STORE
+                    - PLAY_STORE
+                    - PROMOTIONAL
+                    - STRIPE
+            type:
+                type: string
+                enum:
+                    - TEST
+                    - INITIAL_PURCHASE
+                    - RENEWAL
+                    - CANCELLATION
+                    - UNCANCELLATION
+                    - NON_RENEWING_PURCHASE
+                    - SUBSCRIPTION_PAUSED
+                    - EXPIRATION
+                    - BILLING_ISSUE
+                    - PRODUCT_CHANGE
+                    - TRANSFER
+                    - SUBSCRIPTION_EXTENDED
+                    - TEMPORARY_ENTITLEMENT_GRANT
+    UserGameWeekHistory:
+        type: "object"
+        properties:
+            id:
+                type: "string"
+                format: "uuid"
+            user:
+                type: "string"
+                format: "uuid"
+            game_week:
+                type: "string"
+                format: "uuid"
+            week_division:
+                type: "string"
+                format: "uuid"
+                x-nullable: true
+            week_division_position:
+                type: "integer"
+            week_division_tier:
+                type: "integer"
+                x-nullable: true
+            week_points:
+                type: "integer"
+                x-omitempty: false
+            week_coins:
+                type: "integer"
+                x-omitempty: false
+            new_division:
+                type: "string"
+                format: "uuid"
+                x-nullable: true
+            new_division_tier:
+                type: "integer"
+                x-nullable: true
+            status:
+                type: "string"
+                enum:
+                    - "s"
+                    - "p"
+                    - "d"
+                description: "Status of the user in the game week (s: Safe, p: Promoted, d: Demoted)"
+            week_matches_played:
+                type: "integer"
+                x-nullable: true
+            week_average_rank:
+                type: "number"
+                format: "float64"
+                x-nullable: true
+    NewLeaderboardEntry:
+        type: "object"
+        properties:
+            current_user:
+                type: "boolean"
+                x-omitempty: false
+            rank:
+                type: "integer"
+                x-omitempty: false
+            total_score:
+                type: "number"
+                format: "float64"
+                x-omitempty: false
+            user_id:
+                type: "string"
+            user_name:
+                type: "string"
+                x-omitempty: false
+            week_matches_played:
+                type: "integer"
+                x-nullable: true
+            week_average_rank:
+                type: "number"
+                format: "float64"
+                x-nullable: true
+    DivisionLeaderboard:
+        type: "object"
+        properties:
+            division_tier:
+                type: "integer"
+                x-omitempty: false
+            division_id:
+                type: "string"
+                x-omitempty: false
+            division_rewards:
+                type: "array"
+                items:
+                    $ref: "#/definitions/DivisionReward"
+            leaderboard:
+                type: "array"
+                items:
+                    $ref: "#/definitions/NewLeaderboardEntry"
+    DivisionReward:
+        type: "object"
+        properties:
+            min_position:
+                type: "integer"
+            max_position:
+                type: "integer"
+            amount:
+                type: "integer"
+            game:
+                type: "number"
+                x-omitempty: false
+            lapt:
+                type: "number"
+                x-omitempty: false
+            balls:
+                type: "integer"
+                x-omitempty: false
+            signed_shirts:
+                type: "integer"
+                x-omitempty: false
+            shirts:
+                type: "integer"
+                x-omitempty: false
+            signed_balls:
+                type: "integer"
+                x-omitempty: false
+            event:
+                type: "integer"
+                x-omitempty: false
+            kick_off_pack_1:
+                type: "integer"
+                x-omitempty: false
+            kick_off_pack_2:
+                type: "integer"
+                x-omitempty: false
+            kick_off_pack_3:
+                type: "integer"
+                x-omitempty: false
+            season_pack_1:
+                type: "integer"
+                x-omitempty: false
+            season_pack_2:
+                type: "integer"
+                x-omitempty: false
+            season_pack_3:
+                type: "integer"
+                x-omitempty: false
+    NewLeaderboardResponse:
+        type: "object"
+        properties:
+            week:
+                $ref: "#/definitions/GameWeek"
+            division_leaderboards:
+                type: "array"
+                items:
+                    $ref: "#/definitions/DivisionLeaderboard"
+            progression_bar:
+                $ref: "#/definitions/ProgressionBar"
+    ProgressionBar:
+        type: "object"
+        properties:
+            current:
+                type: "number"
+                format: "float64"
+                x-omitempty: false
+            promotion:
+                type: "number"
+                format: "float64"
+                x-omitempty: false
+            relegation:
+                type: "number"
+                format: "float64"
+                x-omitempty: false
+    CardPackType:
+        type: "object"
+        properties:
+            id:
+                type: "string"
+                x-omitempty: false
+            name:
+                type: "string"
+                x-omitempty: false
+            pack_limits:
+                type: "integer"
+                x-omitempty: false
+            card_pack_code:
+                type: "string"
+                x-omitempty: false
+    AppInbox:
+        type: "object"
+        properties:
+            id:
+                type: "string"
+                x-omitempty: false
+            title:
+                type: "string"
+                x-omitempty: false
+            description:
+                type: "string"
+                x-omitempty: false
+            status:
+                type: "string"
+                x-omitempty: false
+            priority:
+                type: "string"
+                x-omitempty: false
+            category:
+                type: "string"
+                x-omitempty: false
+            image_url:
+                type: "string"
+                x-omitempty: true
+            link_url:
+                type: "string"
+                x-omitempty: true
+            created_at:
+                type: "string"
+                format: "date-time"
+                x-omitempty: false
+            updated_at:
+                type: "string"
+                format: "date-time"
+                x-omitempty: false
+            read:
+                type: "boolean"
+                x-omitempty: false
+            claimed:
+                type: "boolean"
+                x-omitempty: false
+            claimed_at:
+                type: "string"
+                format: "date-time"
+                x-omitempty: true
+            reward:
+                $ref: "#/definitions/Rewards"  # Single reward reference
+                x-omitempty: true
+            match:
+                type: "string"
+                x-omitempty: true
+            game_week:
+                type: "string"
+                x-omitempty: true
+            user:
+                $ref: "#/definitions/User"  # Single user reference
+                x-omitempty: true
+            clear:
+                type: "boolean"
+                x-omitempty: false
+            game:
+                type: "string"
+                x-omitempty: true
+    Rewards:
+        type: "object"
+        properties:
+            id:
+                type: "string"
+                x-omitempty: false   
+            name:
+                type: "string"
+                x-omitempty: false
+            credits:
+                type: "integer"
+                x-omitempty: false
+            game_token:
+                type: "integer"
+                x-omitempty: false
+            lapt_token:
+                type: "integer"
+                x-omitempty: false
+            event_tickets:
+                type: "integer"
+                x-omitempty: false
+            ball:
+                type: "integer"
+                x-omitempty: false
+            signed_ball:
+                type: "integer"
+                x-omitempty: false
+            shirt:
+                type: "integer"
+                x-omitempty: false
+            signed_shirt:
+                type: "integer"
+                x-omitempty: false
+            kick_off_pack_1:
+                type: "integer"
+                x-omitempty: false
+            kick_off_pack_2:
+                type: "integer"
+                x-omitempty: false
+            kick_off_pack_3:
+                type: "integer"
+                x-omitempty: false
+            season_pack_1:
+                type: "integer"
+                x-omitempty: false
+            season_pack_2:
+                type: "integer"
+                x-omitempty: false
+            season_pack_3:
+                type: "integer"
+                x-omitempty: false
+    Badge:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Champion Badge"
+        description:
+          type: string
+          example: "Awarded to top players."
+        image:
+          type: string
+          example: "https://example.com/image.png"
+        points:
+          type: integer
+          example: 100
+        type:
+          type: string
+          example: "gold"
+        status:
+          type: string
+          example: "active"
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    CreateBadgeRequest:
+      type: object
+      required:
+        - name
+        - description
+        - image
+        - points
+        - type
+        - status
+      properties:
+        name:
+          type: string
+          example: "Champion Badge"
+        description:
+          type: string
+          example: "Awarded to top players."
+        image:
+          type: string
+          example: "https://example.com/image.png"
+        points:
+          type: integer
+          example: 100
+        type:
+          type: string
+          example: "gold"
+        status:
+          type: string
+          example: "active"
+
+    CreateBadgesRequest:
+      type: array
+      items:
+        $ref: "#/definitions/CreateBadgeRequest"
+
+    UpdateBadgeRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Updated Champion Badge"
+        description:
+          type: string
+          example: "Updated description for the badge."
+        image:
+          type: string
+          example: "https://example.com/image-updated.png"
+        points:
+          type: integer
+          example: 150
+        type:
+          type: string
+          example: "platinum"
+        status:
+          type: string
+          example: "inactive"
+    Banner:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Summer Sale Banner"
+        description:
+          type: string
+          example: "Banner for summer sale."
+        image:
+          type: string
+          example: "https://example.com/image.png"
+        points:
+          type: integer
+          example: 100
+        type:
+          type: string
+          example: "promotion"
+        status:
+          type: string
+          example: "active"
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    CreateBannerRequest:
+      type: object
+      required:
+        - name
+        - description
+        - image
+        - points
+        - type
+        - status
+      properties:
+        name:
+          type: string
+          example: "Summer Sale Banner"
+        description:
+          type: string
+          example: "Banner for summer sale."
+        image:
+          type: string
+          example: "https://example.com/image.png"
+        points:
+          type: integer
+          example: 100
+        type:
+          type: string
+          example: "promotion"
+        status:
+          type: string
+          example: "active"
+
+    CreateBannersRequest:
+      type: array
+      items:
+        $ref: "#/definitions/CreateBannerRequest"
+
+    UpdateBannerRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Updated Summer Sale Banner"
+        description:
+          type: string
+          example: "Updated description for the banner."
+        image:
+          type: string
+          example: "https://example.com/image-updated.png"
+        points:
+          type: integer
+          example: 150
+        type:
+          type: string
+          example: "event"
+        status:
+          type: string
+          example: "inactive"
+    CreateFrameRequest:
+        type: object
+        required:
+            - name
+            - description
+            - image
+            - points
+            - type
+            - status
+        properties:
+            name:
+                type: string
+                example: "Silver Frame"
+            description:
+                type: string
+                example: "Special Silver Frame."
+            image:
+                type: string
+                example: "https://example.com/image.png"
+            points:
+                type: integer
+                example: 100
+            type:
+                type: string
+                example: "decorative"
+            status:
+                type: string
+                example: "active"
+
+    CreateFramesRequest:
+        type: array
+        items:
+            $ref: "#/definitions/CreateFrameRequest"
+    UpdateFrameRequest:
+        type: object
+        properties:
+            name:
+                type: string
+                example: "Updated Silver Frame"
+            description:
+                type: string
+                example: "Updated description for the frame."
+            image:
+                type: string
+                example: "https://example.com/image-updated.png"
+            points:
+                type: integer
+                example: 150
+            type:
+                type: string
+                example: "rare"
+            status:
+                type: string
+                example: "inactive"
+    Frame:
+        type: object
+        properties:
+            id:
+                type: integer
+                example: 1
+            name:
+                type: string
+                example: "Silver Frame"
+            description:
+                type: string
+                example: "Special Silver Frame."
+            image:
+                type: string
+                example: "https://example.com/image.png"
+            points:
+                type: integer
+                example: 100
+            type:
+                type: string
+                example: "decorative"
+            status:
+                type: string
+                example: "active"
+            created_at:
+                type: string
+                format: date-time
+            updated_at:
+                type: string
+                format: date-time
+    UserBadge:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        user_id:
+          type: string
+          example: "user123"
+        badge_id:
+          type: integer
+          example: 5
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    UserBanner:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        user_id:
+          type: string
+          example: "user123"
+        banner_id:
+          type: integer
+          example: 5
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    UserFrame:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        user_id:
+          type: string
+          example: "user123"
+        frame_id:
+          type: integer
+          example: 5
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time

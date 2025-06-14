@@ -1,0 +1,194 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fanclash-api
+  namespace: "fanclash-dev"
+  labels:
+    app: fanclash-api
+    purpose: api
+    tags.datadoghq.com/env: "dev"
+    tags.datadoghq.com/service: "laliga-matchfantasy-api"
+    tags.datadoghq.com/version: "latest"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fanclash-api
+  minReadySeconds: 15
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: fanclash-api
+        purpose: api
+        tags.datadoghq.com/env: "dev"
+        tags.datadoghq.com/service: "laliga-matchfantasy-api"
+        tags.datadoghq.com/version: "latest"
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - mobile-api
+                topologyKey: "kubernetes.io/hostname"
+      containers:
+        - name: fanclash-api
+          image: registry.digitalocean.com/gameon-ams3/laliga-matchfantasy-api:TAG_PLACEHOLDER
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: fanclash-config
+            - configMapRef:
+                name: rmq-config
+            - configMapRef:
+                name: ethereum-config
+            - configMapRef:
+                name: redis-config
+            - secretRef:
+                name: db-creds
+          env:
+            - name: ENV_NAME
+              value: "dev"
+            - name: DD_AGENT_HOST
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: DD_ENV
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.labels['tags.datadoghq.com/env']
+            - name: DD_SERVICE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.labels['tags.datadoghq.com/service']
+            - name: DD_VERSION
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.labels['tags.datadoghq.com/version']
+            - name: PORT
+              value: "8000"
+            - name: FCM_CREDENTIALS
+              valueFrom:
+                secretKeyRef:
+                  name: fcm-creds
+                  key: FCM_CREDENTIALS
+            - name: STATSD_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: fanclash-config
+                  key: STATSD_HOST
+            - name: STATSD_PORT
+              value: "8125"
+            - name: TZ
+              value: "UTC"
+            - name: AMQP_GAMES_EXCHANGE
+              valueFrom:
+                configMapKeyRef:
+                  name: fanclash-config
+                  key: AMQP_GAMES_EXCHANGE
+            - name: RMQ_GAME_UPDATES_EXCHANGE
+              valueFrom:
+                configMapKeyRef:
+                  name: fanclash-config
+                  key: RMQ_GAME_UPDATES_EXCHANGE
+            - name: RMQ_FCM_EXCHANGE
+              valueFrom:
+                configMapKeyRef:
+                  name: fanclash-config
+                  key: RMQ_FCM_EXCHANGE
+            - name: RMQ_USER
+              valueFrom:
+                secretKeyRef:
+                  name: rmq-creds
+                  key: RMQ_USER
+            - name: RMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: rmq-creds
+                  key: RMQ_PASSWORD
+            - name: ETHEREUM_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: ethereum-config
+                  key: ETHEREUM_URL
+            - name: WALLET_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: ethereum-config
+                  key: WALLET_KEY
+            - name: PACK_ADDRESS
+              valueFrom:
+                configMapKeyRef:
+                  name: ethereum-config
+                  key: PACK_ADDRESS
+            - name: CARDS_ADDRESS
+              valueFrom:
+                configMapKeyRef:
+                  name: ethereum-config
+                  key: CARDS_ADDRESS
+            - name: SMTP_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: ethereum-config
+                  key: SMTP_HOST
+            - name: SMTP_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: ethereum-config
+                  key: SMTP_PASSWORD
+            - name: SMTP_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: ethereum-config
+                  key: SMTP_PORT
+            - name: SMTP_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: ethereum-config
+                  key: SMTP_USER
+            - name: JWT_SECRET
+              valueFrom:
+                configMapKeyRef:
+                  name: ethereum-config
+                  key: JWT_SECRET
+            - name: REDIS_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: redis-config
+                  key: REDIS_PASSWORD
+            - name: REDIS_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: redis-config
+                  key: REDIS_PORT
+            - name: REDIS_ADDRESS
+              valueFrom:
+                configMapKeyRef:
+                  name: redis-config
+                  key: REDIS_ADDRESS
+            - name: REDIS_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: redis-config
+                  key: REDIS_DB
+          ports:
+            - containerPort: 8000
+          readinessProbe:
+            httpGet:
+              path: /readiness
+              port: 8000
+            initialDelaySeconds: 5
+            timeoutSeconds: 5
+          resources:
+            requests:
+              cpu: 200m

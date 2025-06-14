@@ -1,0 +1,24 @@
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  #namespace: qa
+  name: "fanclash-ingress"
+  labels:
+    app: "fanclash-api"
+  annotations:
+    kubernetes.io/ingress.class: "alb"
+    alb.ingress.kubernetes.io/scheme: "internet-facing"
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:826737140156:certificate/a6916a38-9e1d-44a9-8632-77c1c8b8bc66
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80,"HTTPS": 443}]'
+
+    alb.ingress.kubernetes.io/healthcheck-path: "/"
+    alb.ingress.kubernetes.io/success-codes: "200,404,400"
+spec:
+  rules:
+  - http:
+      paths:
+      - path: "/*"
+        backend:
+          serviceName: "fanclash-api"
+          servicePort: 80
