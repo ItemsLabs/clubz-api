@@ -98,3 +98,4 @@ func main() {
 		logrus.WithError(err).Error("cannot run service")
 	}
 }
+// CI/CD test comment
