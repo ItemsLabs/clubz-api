@@ -5,8 +5,8 @@ import (
 
 	"github.com/go-redis/redis/v8"
 
-	"github.com/gameon-app-inc/laliga-matchfantasy-api/database"
-	"github.com/gameon-app-inc/laliga-matchfantasy-api/types"
+	"github.com/itemslabs/clubz-api/database"
+	"github.com/itemslabs/clubz-api/types"
 	"github.com/labstack/echo/v4"
 )
 

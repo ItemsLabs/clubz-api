@@ -1,9 +1,9 @@
 package apiconv
 
 import (
-	"github.com/gameon-app-inc/laliga-matchfantasy-api/database"
-	"github.com/gameon-app-inc/laliga-matchfantasy-api/database/schema"
-	"github.com/gameon-app-inc/laliga-matchfantasy-api/routes/model"
+	"github.com/itemslabs/clubz-api/database"
+	"github.com/itemslabs/clubz-api/database/schema"
+	"github.com/itemslabs/clubz-api/routes/model"
 	"github.com/go-openapi/strfmt"
 	"github.com/sirupsen/logrus"
 )

@@ -10,9 +10,9 @@ import (
 	"os"
 	"time"
 
-	GameToken "github.com/gameon-app-inc/laliga-matchfantasy-api/bindings/GameToken"
-	LaLiga "github.com/gameon-app-inc/laliga-matchfantasy-api/bindings/Players"
-	WarChest "github.com/gameon-app-inc/laliga-matchfantasy-api/bindings/WarChest"
+	GameToken "github.com/itemslabs/clubz-api/bindings/GameToken"
+	LaLiga "github.com/itemslabs/clubz-api/bindings/Players"
+	WarChest "github.com/itemslabs/clubz-api/bindings/WarChest"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"

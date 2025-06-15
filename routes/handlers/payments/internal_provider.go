@@ -5,9 +5,9 @@ import (
 	"log"
 	"time"
 
-	"github.com/gameon-app-inc/laliga-matchfantasy-api/database"
-	"github.com/gameon-app-inc/laliga-matchfantasy-api/database/schema"
-	"github.com/gameon-app-inc/laliga-matchfantasy-api/types"
+	"github.com/itemslabs/clubz-api/database"
+	"github.com/itemslabs/clubz-api/database/schema"
+	"github.com/itemslabs/clubz-api/types"
 	"github.com/google/uuid"
 	"github.com/volatiletech/null/v8"
 )

@@ -1,8 +1,8 @@
 package util
 
 import (
-	"github.com/gameon-app-inc/laliga-matchfantasy-api/config"
-	"github.com/gameon-app-inc/laliga-matchfantasy-api/database"
+	"github.com/itemslabs/clubz-api/config"
+	"github.com/itemslabs/clubz-api/database"
 	"github.com/palantir/stacktrace"
 )
 

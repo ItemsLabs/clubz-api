@@ -5,10 +5,10 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/gameon-app-inc/laliga-matchfantasy-api/entity"
-	"github.com/gameon-app-inc/laliga-matchfantasy-api/routes/apiconv"
-	"github.com/gameon-app-inc/laliga-matchfantasy-api/routes/model"
-	"github.com/gameon-app-inc/laliga-matchfantasy-api/types"
+	"github.com/itemslabs/clubz-api/entity"
+	"github.com/itemslabs/clubz-api/routes/apiconv"
+	"github.com/itemslabs/clubz-api/routes/model"
+	"github.com/itemslabs/clubz-api/types"
 	"github.com/labstack/echo/v4"
 	"github.com/sirupsen/logrus"
 )

@@ -3,7 +3,7 @@ package handlers
 import (
 	"fmt"
 
-	"github.com/gameon-app-inc/laliga-matchfantasy-api/util"
+	"github.com/itemslabs/clubz-api/util"
 	"github.com/labstack/echo/v4"
 	"gopkg.in/olahol/melody.v1"
 )

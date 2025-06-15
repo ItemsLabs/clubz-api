@@ -3,8 +3,8 @@ package apiconv
 import (
 	"encoding/json"
 
-	"github.com/gameon-app-inc/laliga-matchfantasy-api/database/schema"
-	"github.com/gameon-app-inc/laliga-matchfantasy-api/routes/model"
+	"github.com/itemslabs/clubz-api/database/schema"
+	"github.com/itemslabs/clubz-api/routes/model"
 )
 
 func ToMatchHeadlineSlice(headlines schema.MatchHeadlineSlice) []*model.MatchHeadline {

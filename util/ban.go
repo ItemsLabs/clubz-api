@@ -3,7 +3,7 @@ package util
 import (
 	"time"
 
-	"github.com/gameon-app-inc/laliga-matchfantasy-api/database/schema"
+	"github.com/itemslabs/clubz-api/database/schema"
 )
 
 func UserHasBanPenalties(user *schema.User) bool {

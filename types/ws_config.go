@@ -1,7 +1,7 @@
 package types
 
 import (
-	"github.com/gameon-app-inc/laliga-matchfantasy-api/event_bus"
+	"github.com/itemslabs/clubz-api/event_bus"
 	"gopkg.in/olahol/melody.v1"
 )
 

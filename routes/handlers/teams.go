@@ -1,8 +1,8 @@
 package handlers
 
 import (
-	"github.com/gameon-app-inc/laliga-matchfantasy-api/database/schema"
-	"github.com/gameon-app-inc/laliga-matchfantasy-api/routes/apiconv"
+	"github.com/itemslabs/clubz-api/database/schema"
+	"github.com/itemslabs/clubz-api/routes/apiconv"
 	"github.com/labstack/echo/v4"
 )
 

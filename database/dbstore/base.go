@@ -3,7 +3,7 @@ package dbstore
 import (
 	"database/sql"
 
-	"github.com/gameon-app-inc/laliga-matchfantasy-api/database"
+	"github.com/itemslabs/clubz-api/database"
 
 	"github.com/gsamokovarov/sx"
 )

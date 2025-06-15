@@ -4,8 +4,8 @@ import (
 	"context"
 	"encoding/json"
 
-	"github.com/gameon-app-inc/laliga-matchfantasy-api/amqp"
-	"github.com/gameon-app-inc/laliga-matchfantasy-api/event_bus"
+	"github.com/itemslabs/clubz-api/amqp"
+	"github.com/itemslabs/clubz-api/event_bus"
 	"github.com/sirupsen/logrus"
 )
 

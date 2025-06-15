@@ -8,7 +8,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/gameon-app-inc/laliga-matchfantasy-api/database/schema"
+	"github.com/itemslabs/clubz-api/database/schema"
 	"github.com/volatiletech/null/v8"
 	"github.com/volatiletech/sqlboiler/v4/boil"
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"

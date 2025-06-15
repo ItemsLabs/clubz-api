@@ -8,12 +8,13 @@ import (
 
 // Represents a structure with all env variables needed by the backend.
 var cfg struct {
-	DatabaseUser               string        `env:"DATABASE_USER,required"`
-	DatabasePassword           string        `env:"DATABASE_PASSWORD,required"`
-	DatabaseHost               string        `env:"DATABASE_HOST,required"`
+	DatabaseURL                string        `env:"DATABASE_URL"`
+	DatabaseUser               string        `env:"DATABASE_USER"`
+	DatabasePassword           string        `env:"DATABASE_PASSWORD"`
+	DatabaseHost               string        `env:"DATABASE_HOST"`
 	DatabasePort               int           `env:"DATABASE_PORT" envDefault:"5432"`
-	DatabaseName               string        `env:"DATABASE_NAME,required"`
-	DatabaseSSLMode            string        `env:"DATABASE_SSLMODE" envDefault:"disable"`
+	DatabaseName               string        `env:"DATABASE_NAME"`
+	DatabaseSSLMode            string        `env:"DATABASE_SSLMODE" envDefault:"require"`
 	DatabaseMaxOpenConnections int           `env:"DATABASE_MAX_OPEN_CONNECTIONS" envDefault:"10"`
 	DatabaseMaxIdleConnections int           `env:"DATABASE_MAX_IDLE_CONNECTIONS" envDefault:"2"`
 	StatsdHost                 string        `env:"STATSD_HOST"`

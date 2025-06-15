@@ -9,7 +9,7 @@ import (
 
 	"math/big"
 
-	connections "github.com/gameon-app-inc/laliga-matchfantasy-api/web3"
+	connections "github.com/itemslabs/clubz-api/web3"
 	"github.com/labstack/echo/v4"
 )
 

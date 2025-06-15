@@ -4,15 +4,15 @@ import (
 	"log"
 	"os"
 
-	"github.com/gameon-app-inc/laliga-matchfantasy-api/config"
-	"github.com/gameon-app-inc/laliga-matchfantasy-api/types"
+	"github.com/itemslabs/clubz-api/config"
+	"github.com/itemslabs/clubz-api/types"
 
-	"github.com/gameon-app-inc/laliga-matchfantasy-api/database"
-	"github.com/gameon-app-inc/laliga-matchfantasy-api/database/action"
-	"github.com/gameon-app-inc/laliga-matchfantasy-api/database/dbstore"
+	"github.com/itemslabs/clubz-api/database"
+	"github.com/itemslabs/clubz-api/database/action"
+	"github.com/itemslabs/clubz-api/database/dbstore"
 
-	_ "github.com/gameon-app-inc/laliga-matchfantasy-api/docs"
-	"github.com/gameon-app-inc/laliga-matchfantasy-api/routes/handlers"
+	_ "github.com/itemslabs/clubz-api/docs"
+	"github.com/itemslabs/clubz-api/routes/handlers"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	echoSwagger "github.com/swaggo/echo-swagger"

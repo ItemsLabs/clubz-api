@@ -4,8 +4,8 @@ import (
 	"time"
 
 	"github.com/davecgh/go-spew/spew"
-	"github.com/gameon-app-inc/laliga-matchfantasy-api/database/schema"
-	"github.com/gameon-app-inc/laliga-matchfantasy-api/types"
+	"github.com/itemslabs/clubz-api/database/schema"
+	"github.com/itemslabs/clubz-api/types"
 	"github.com/volatiletech/sqlboiler/v4/queries"
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 )

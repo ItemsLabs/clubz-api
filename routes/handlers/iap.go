@@ -9,9 +9,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gameon-app-inc/laliga-matchfantasy-api/database"
-	"github.com/gameon-app-inc/laliga-matchfantasy-api/database/schema"
-	"github.com/gameon-app-inc/laliga-matchfantasy-api/routes/model"
+	"github.com/itemslabs/clubz-api/database"
+	"github.com/itemslabs/clubz-api/database/schema"
+	"github.com/itemslabs/clubz-api/routes/model"
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"github.com/sirupsen/logrus"

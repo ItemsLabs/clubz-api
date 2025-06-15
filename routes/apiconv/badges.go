@@ -1,8 +1,8 @@
 package apiconv
 
 import (
-	"github.com/gameon-app-inc/laliga-matchfantasy-api/database/schema"
-	"github.com/gameon-app-inc/laliga-matchfantasy-api/routes/model"
+	"github.com/itemslabs/clubz-api/database/schema"
+	"github.com/itemslabs/clubz-api/routes/model"
 )
 
 // ToBadgeSlice converts a slice of Badge schema objects to a slice of Badge models.

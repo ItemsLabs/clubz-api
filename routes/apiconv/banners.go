@@ -1,8 +1,8 @@
 package apiconv
 
 import (
-	"github.com/gameon-app-inc/laliga-matchfantasy-api/database/schema"
-	"github.com/gameon-app-inc/laliga-matchfantasy-api/routes/model"
+	"github.com/itemslabs/clubz-api/database/schema"
+	"github.com/itemslabs/clubz-api/routes/model"
 )
 
 // ToBannerSlice converts a slice of Banner schema objects to a slice of Banner models.

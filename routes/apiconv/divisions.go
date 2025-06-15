@@ -4,10 +4,10 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/gameon-app-inc/laliga-matchfantasy-api/database/schema"
-	"github.com/gameon-app-inc/laliga-matchfantasy-api/entity"
-	"github.com/gameon-app-inc/laliga-matchfantasy-api/routes/model"
-	"github.com/gameon-app-inc/laliga-matchfantasy-api/types"
+	"github.com/itemslabs/clubz-api/database/schema"
+	"github.com/itemslabs/clubz-api/entity"
+	"github.com/itemslabs/clubz-api/routes/model"
+	"github.com/itemslabs/clubz-api/types"
 	"github.com/go-openapi/strfmt"
 )
 

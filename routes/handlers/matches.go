@@ -10,12 +10,12 @@ import (
 
 	"github.com/go-redis/redis/v8"
 
-	"github.com/gameon-app-inc/laliga-matchfantasy-api/config"
-	"github.com/gameon-app-inc/laliga-matchfantasy-api/database"
-	"github.com/gameon-app-inc/laliga-matchfantasy-api/database/schema"
-	"github.com/gameon-app-inc/laliga-matchfantasy-api/routes/apiconv"
-	"github.com/gameon-app-inc/laliga-matchfantasy-api/routes/model"
-	"github.com/gameon-app-inc/laliga-matchfantasy-api/types"
+	"github.com/itemslabs/clubz-api/config"
+	"github.com/itemslabs/clubz-api/database"
+	"github.com/itemslabs/clubz-api/database/schema"
+	"github.com/itemslabs/clubz-api/routes/apiconv"
+	"github.com/itemslabs/clubz-api/routes/model"
+	"github.com/itemslabs/clubz-api/types"
 	"github.com/labstack/echo/v4"
 )
 

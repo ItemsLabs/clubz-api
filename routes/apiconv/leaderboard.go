@@ -1,8 +1,8 @@
 package apiconv
 
 import (
-	"github.com/gameon-app-inc/laliga-matchfantasy-api/database/schema"
-	"github.com/gameon-app-inc/laliga-matchfantasy-api/routes/model"
+	"github.com/itemslabs/clubz-api/database/schema"
+	"github.com/itemslabs/clubz-api/routes/model"
 )
 
 func ToLeaderBoardEntry(el *schema.MatchLeaderboard) *model.LeaderboardEntry {
