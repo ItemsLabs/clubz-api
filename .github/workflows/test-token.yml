@@ -1,0 +1,28 @@
+name: "Test Token Authentication"
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-token:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Test if secret exists
+      run: |
+        if [ -z "${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}" ]; then
+          echo "❌ DIGITALOCEAN_ACCESS_TOKEN secret is empty or not set"
+          exit 1
+        else
+          echo "✅ DIGITALOCEAN_ACCESS_TOKEN secret exists"
+          echo "Token length: ${#DIGITALOCEAN_ACCESS_TOKEN}"
+        fi
+      env:
+        DIGITALOCEAN_ACCESS_TOKEN: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+    
+    - name: Test doctl installation
+      uses: digitalocean/action-doctl@v2
+      with:
+        token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+    
+    - name: Test doctl authentication
+      run: doctl account get 
