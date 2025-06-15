@@ -31,6 +31,13 @@ var (
 )
 
 func init() {
+	// Only initialize Ethereum client if enabled
+	ethereumEnabled := os.Getenv("ETHEREUM_ENABLED")
+	if ethereumEnabled == "false" {
+		log.Printf("Ethereum client disabled via ETHEREUM_ENABLED=false")
+		return
+	}
+
 	var err error
 	client, err = ethclient.Dial(rpc)
 	if err != nil {
