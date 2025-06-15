@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"os"
 
 	"github.com/itemslabs/clubz-api/amqp"
 	"github.com/itemslabs/clubz-api/config"
@@ -57,9 +58,11 @@ func main() {
 
 	b := event_bus.NewDefaultBus()
 
-	// start datadog tracing
-	tracer.Start()
-	defer tracer.Stop()
+	// start datadog tracing only if enabled
+	if os.Getenv("DD_TRACE_ENABLED") != "false" {
+		tracer.Start()
+		defer tracer.Stop()
+	}
 
 	// start event listener
 	listeners.StartGameEventsListener(
@@ -73,7 +76,10 @@ func main() {
 	// start http handler
 	r := echo.New()
 
-	r.Use(echoTrace.Middleware(echoTrace.WithServiceName("clubz-api")))
+	// Only add Datadog middleware if tracing is enabled
+	if os.Getenv("DD_TRACE_ENABLED") != "false" {
+		r.Use(echoTrace.Middleware(echoTrace.WithServiceName("clubz-api")))
+	}
 	m := melody.New()
 	chatWS := melody.New()
 	leaderboardWS := melody.New()
@@ -98,4 +104,5 @@ func main() {
 		logrus.WithError(err).Error("cannot run service")
 	}
 }
+
 // CI/CD test comment
