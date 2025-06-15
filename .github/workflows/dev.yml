@@ -1,4 +1,4 @@
-name: "[dev] K8S Api Deploy"
+name: "[dev] Clubz API Deploy"
 defaults:
   run:
     shell: bash
@@ -6,7 +6,7 @@ defaults:
 env:
   DIGITALOCEAN_ACCESS_TOKEN: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
   ENV: dev
-  NAMESPACE: fanclash-dev
+  NAMESPACE: clubz-dev
 
 on:
   push:
@@ -15,8 +15,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  laliga-matchfantasy-api:
-    name: laliga-matchfantasy-api
+  clubz-api:
+    name: clubz-api
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -32,31 +32,26 @@ jobs:
         run: doctl registry login --expiry-seconds 600
 
       - name: Configure Kubectl for DOKS
-        run: doctl kubernetes cluster kubeconfig save dev-fanclash
+        run: doctl kubernetes cluster kubeconfig save clubz-platform-cluster
 
       - name: Build and Push Docker Image
         run: |
           SHORT_SHA=$(echo $GITHUB_SHA | cut -c1-7)
-          DOCKER_IMAGE="laliga-matchfantasy-api:$SHORT_SHA"
+          DOCKER_IMAGE="clubz-api:$SHORT_SHA"
           docker build -t $DOCKER_IMAGE .
-          docker tag $DOCKER_IMAGE registry.digitalocean.com/gameon-ams3/$DOCKER_IMAGE
-          docker push registry.digitalocean.com/gameon-ams3/$DOCKER_IMAGE
+          docker tag $DOCKER_IMAGE registry.digitalocean.com/clubz-platform-registry/$DOCKER_IMAGE
+          docker push registry.digitalocean.com/clubz-platform-registry/$DOCKER_IMAGE
 
-      - name: Update Image Tag in K8S Deployment
+      - name: Update Kubernetes Deployment
         run: |
           SHORT_SHA=$(echo $GITHUB_SHA | cut -c1-7)
-          sed -i 's/TAG_PLACEHOLDER/'"$SHORT_SHA"'/g' $GITHUB_WORKSPACE/images/laliga-matchfantasy-api/deployment_${{ env.ENV }}.yaml
-
-      - name: K8S Api Deploy
-        run: |
-            kubectl apply -f images/laliga-matchfantasy-api/deployment_${{ env.ENV }}.yaml
-            kubectl apply -f images/laliga-matchfantasy-api/service_${{ env.ENV }}.yml
+          kubectl set image deployment/clubz-api clubz-api=registry.digitalocean.com/clubz-platform-registry/clubz-api:$SHORT_SHA -n $NAMESPACE
       
       - name: Check Deployment Health and Rollback if Necessary
         run: |
-          if ! kubectl rollout status deployment/fanclash-api -n $NAMESPACE; then
+          if ! kubectl rollout status deployment/clubz-api -n $NAMESPACE --timeout=300s; then
             echo "Deployment health check failed. Rolling back..."
-            kubectl rollout undo deployment/fanclash-api -n $NAMESPACE
+            kubectl rollout undo deployment/clubz-api -n $NAMESPACE
           else
             echo "Deployment is healthy."
           fi
@@ -68,8 +63,8 @@ jobs:
         env:
           SLACK_CHANNEL: staging-deployments
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_STAGING_URL }}
-          SLACK_ICON_EMOJI: ':gameon:'
+          SLACK_ICON_EMOJI: ':rocket:'
           SLACK_USERNAME: GitHubAction
-          SLACK_COLOR: ${{ job.status }} # Sets the color of the Slack notification bar to red for failures
-          SLACK_TITLE: 'Dev Laliga API K8s deployment. Commit message: ${{ github.event.head_commit.message }}'
-          SLACK_FOOTER: Powered By GameOn DevOps team
+          SLACK_COLOR: ${{ job.status }}
+          SLACK_TITLE: 'Dev Clubz API K8s deployment. Commit message: ${{ github.event.head_commit.message }}'
+          SLACK_FOOTER: Powered By Clubz DevOps team
